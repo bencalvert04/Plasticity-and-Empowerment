@@ -1,6 +1,4 @@
 import math
-import sys
-import matplotlib.pyplot as plt
 
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
@@ -21,14 +19,12 @@ def entropy(logits):
 
 
 @torch.inference_mode()
-def generate_and_score(prompt, max_new_tokens=125):
-    prompt_ids = tokenizer.encode(prompt, add_special_tokens=False)
+def generate_and_score(prompt_ids, max_new_tokens=125):
     bos = [tokenizer.bos_token_id]
     if len(bos + prompt_ids) + max_new_tokens > model.config.max_position_embeddings:
         raise ValueError("Prompt plus output exceeds the model's context limit.")
     output = []
     total = 0.0
-    y_values = []
 
     for _ in range(max_new_tokens):
         # Both distributions predict the next token, before it is appended.
@@ -36,7 +32,6 @@ def generate_and_score(prompt, max_new_tokens=125):
         logits_without_prompt = model(torch.tensor([bos + output]), use_cache=False).logits[0, -1]
         entropy_change = entropy(logits_without_prompt) - entropy(logits_with_prompt)
         total += entropy_change
-        y_values.append(entropy_change)
 
 
         # Greedy alternative: replace the next two lines with this line.
@@ -47,46 +42,24 @@ def generate_and_score(prompt, max_new_tokens=125):
         if token == tokenizer.eos_token_id:
             break
 
-    return tokenizer.decode(output, skip_special_tokens=True), total, y_values
+    return total
 
 
 if __name__ == "__main__":
-    import numpy as np
-
     prompts = [
-        "ben is a great person",
-        "ray and claire sitting in a tree",
-        "you smell pretty funny",
-        "his hair was down to his knees",
-        "soda is bad for you",
-        "the cat fell asleep in the sunshine",
-        "our train leaves before sunrise",
-        "rain was tapping against the window",
-        "an old book lay open on the desk",
-        "the moon disappeared behind the clouds",
-        "music filled the quiet room",
-        "the garden comes alive every spring",
-        "i forgot my umbrella at home",
-        "this coffee is too hot to drink",
-        "snow covered the distant mountains",
-        "the children built a castle in the sand",
-        "a dog chased the ball across the park",
-        "the stars look especially bright tonight",
-        "the recipe calls for two cups of flour",
-        "the wooden door creaked as it opened",
+        "ben is a great person who always helps his friends when they are struggling and takes time to listen before offering advice. Last weekend he spent the morning helping a neighbor repair a broken fence and then brought dinner to a friend who had been sick. He believes that small acts of kindness can make an ordinary day feel much better for everyone around him.",
+        "ray and claire sitting in a tree watched the sunset over the river while they talked about their plans for the summer. They hoped to visit the mountains, explore a few quiet towns, and spend several nights camping beneath the stars. As the evening grew darker, they climbed down carefully and followed the winding path back toward the lights of their neighborhood.",
+        "you smell pretty funny after spending the entire afternoon working in the garden and carrying bags of soil through the rain. Your boots are covered in mud, your jacket is soaked, and there are leaves caught in your hair. Before sitting down for dinner, you decide to leave your clothes by the door and take a warm shower to wash away the dirt.",
+        "his hair was down to his knees and moved gently in the wind as he walked along the narrow path beside the lake. Across the water, a small boat drifted near the reeds while birds gathered on the wooden dock. He stopped beneath an old willow tree, opened his notebook, and began describing the peaceful scene before the afternoon light faded.",
+        "soda is bad for you when you drink too much of it every day instead of choosing water with your meals and snacks. At the grocery store, you decide to buy a large bottle of water and some fresh fruit for the week. You also plan to prepare simple lunches at home so that choosing a different drink becomes part of your daily routine.",
     ]
-    all_y_values = []
-    for j, prompt in enumerate(prompts, start=1):
-        response, score, y_values = generate_and_score(prompt)
-        print(f"Prompt {j}: {response}\nSum of entropy changes: {score:.6f} bits")
-        all_y_values.append(y_values)
-    # Use positions reached by every response so each mean includes every prompt.
-    length = min(map(len, all_y_values))
-    mean_y_values = np.mean([values[:length] for values in all_y_values], axis=0)
-    plt.plot(range(1, length + 1), mean_y_values)
-    plt.xlabel("Output token position")
-    plt.ylabel(f"Mean entropy change across {len(prompts)} prompts (bits)")
-    plt.grid(axis="y", alpha=0.3)
-    plt.axhline(0, color="black", linestyle="--", linewidth=1)
-    plt.tight_layout()
-    plt.show()
+    tokenized_prompts = [tokenizer.encode(prompt, add_special_tokens=False) for prompt in prompts]
+    if any(len(ids) < 50 for ids in tokenized_prompts):
+        raise ValueError("Every prompt must contain at least 50 tokens.")
+    import matplotlib.pyplot as plt; average_scores = []
+    for length in range(5, 51, 2):
+        scores = [generate_and_score(ids[:length]) for ids in tokenized_prompts]
+        average_score = sum(scores) / len(scores)
+        average_scores.append(average_score)
+        print(f"Input length {length} tokens: mean sum of entropy changes = {average_score:.6f} bits")
+    plt.plot(range(5, 51, 2), average_scores, "o-"); plt.xlabel("Input token length"); plt.ylabel("Mean sum of entropy changes (bits)"); plt.tight_layout(); plt.show()
