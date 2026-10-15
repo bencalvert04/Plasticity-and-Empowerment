@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+
+# Local results from earlier runs
+/example_result.json
+/entropy_20_prompts.json
+/mean_entropy.png
+/mean_entropy_20_prompts.png
+/run_output_20_prompts.txt
