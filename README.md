@@ -31,26 +31,15 @@ each cluster to its center and saves the questions, reference answers, IDs,
 cluster sizes and weights to `gsm8k_clustered_50.json` by default.
 Only question text is embedded, using the embedding model’s default token limit.
 
-Install the additional dependencies and call clustering from the experiment:
+The GSM8K experiment now uses random sampling only. The clustering script
+and map remain available as standalone exploratory tools:
 
 ```sh
 python3 -m pip install -r requirements-clustering.txt
-python3 gsm8k_directed_information.py --clusters 50 --trials 5
-```
-
-To create the subset separately, or reuse the exact saved selection:
-
-```sh
 python3 cluster_gsm8k.py --clusters 50
-python3 gsm8k_directed_information.py --questions-file gsm8k_clustered_50.json --trials 5
 ```
 
-`--clusters`, `--questions-file`, and `--sample` are mutually exclusive.
-Without these options, the experiment still samples 10 questions randomly.
-The clustering seed does not seed generated responses. Cluster weights are
-saved for future approximate dataset summaries; the experiment still reports
-individual trial scores and maxima, without averaging or weighting them.
-Centroid representatives are not an unbiased random sample, and semantic
+Cluster representatives are not an unbiased random sample, and semantic
 coverage does not guarantee coverage of mathematical difficulty.
 
 ### Interactive UMAP map

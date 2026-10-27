@@ -1,10 +1,9 @@
-"""Entropy-difference proxies on random or embedding-clustered GSM8K questions."""
+"""entropy-difference proxies on a random GSM8K sample."""
 
 import argparse
 import json
 import random
 from urllib.request import urlopen
-from pathlib import Path
 
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
@@ -12,30 +11,19 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 from input_and_output_directed_information import generate_and_score
 
 
-def main(max_new_tokens=None, sample=10, trials=1, questions_file=None, clusters=None):
+def main(max_new_tokens=None, sample=10, trials=1):
     if not 1 <= sample <= 8000:
         raise ValueError("sample must be between 1 and 8000.")
     if trials < 1:
         raise ValueError("trials must be a positive integer.")
     if not torch.backends.mps.is_available():
         raise RuntimeError("This experiment requires an Apple GPU with MPS support.")
-    if clusters is not None:
-        from cluster_gsm8k import main as cluster_questions
-        questions_file = f"gsm8k_clustered_{clusters}.json"
-        cluster_questions(count=clusters, output=questions_file)
-    if questions_file:
-        records = json.loads(Path(questions_file).read_text())["questions"]
-        if not records or any(not isinstance(r.get("question"), str) or not r["question"].strip() for r in records):
-            raise ValueError("Questions file must contain nonempty question strings.")
-        questions = [r["question"] for r in records]
-        print(f"Using all {len(questions)} saved questions from {questions_file}", flush=True)
-    else:
-        questions = []
-        for split in ("train", "test"):
-            url = f"https://raw.githubusercontent.com/openai/grade-school-math/master/grade_school_math/data/{split}.jsonl"
-            with urlopen(url, timeout=30) as response:
-                questions.extend(json.loads(line)["question"] for line in response if line.strip())
-        questions = random.sample(questions, sample)
+    questions = []
+    for split in ("train", "test"):
+        url = f"https://raw.githubusercontent.com/openai/grade-school-math/master/grade_school_math/data/{split}.jsonl"
+        with urlopen(url, timeout=30) as response:
+            questions.extend(json.loads(line)["question"] for line in response if line.strip())
+    questions = random.sample(questions, sample)
 
     torch.set_num_threads(4)
     model_id = "Qwen/Qwen2.5-0.5B-Instruct"
@@ -48,9 +36,6 @@ def main(max_new_tokens=None, sample=10, trials=1, questions_file=None, clusters
     all_dir_inf_ItoO, all_dir_inf_POtoFO = [], []
     for i, question in enumerate(questions, start=1):
         print(f"\nQuestion {i}: {question}", flush=True)
-        if questions_file:
-            record = records[i - 1]
-            print(f"GSM8K ID: {record['id']}; cluster size: {record['cluster_size']}; weight: {record['weight']:.6f}")
         for trial in range(1, trials + 1):
             print(f"\nTrial {trial}/{trials}", flush=True)
             response, dir_inf_ItoO, dir_inf_POtoFO = generate_and_score(
@@ -72,16 +57,11 @@ def main(max_new_tokens=None, sample=10, trials=1, questions_file=None, clusters
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
-    selection = parser.add_mutually_exclusive_group()
-    selection.add_argument("--sample", type=int, default=10, help="Number of questions, 1–8000 (default: 10).")
-    selection.add_argument("--questions-file", help="Run all questions in a saved clustering JSON file.")
-    selection.add_argument("--clusters", type=int, help="Embed GSM8K and select one representative per cluster before testing.")
+    parser.add_argument("--sample", type=int, default=10, help="Number of questions, 1–8000 (default: 10).")
     parser.add_argument("--trials", type=int, default=1, help="Responses per question (positive integer; default: 1).")
     args = parser.parse_args()
     if not 1 <= args.sample <= 8000:
         parser.error("--sample must be between 1 and 8000.")
     if args.trials < 1:
         parser.error("--trials must be a positive integer.")
-    if args.clusters is not None and not 1 <= args.clusters <= 8792:
-        parser.error("--clusters must be between 1 and 8792.")
-    main(sample=args.sample, trials=args.trials, questions_file=args.questions_file, clusters=args.clusters)
+    main(sample=args.sample, trials=args.trials)
