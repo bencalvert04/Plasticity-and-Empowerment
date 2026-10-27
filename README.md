@@ -28,8 +28,8 @@ Entropies are in bits. Despite the experiment names, this is prompt-induced entr
 `sentence-transformers/all-MiniLM-L6-v2`, then applies KMeans to normalized
 embeddings with seed 0 and 10 initializations. It selects the nearest member of
 each cluster to its center and saves the questions, reference answers, IDs,
-cluster memberships, sizes, and weights to `gsm8k_clustered_50.json` by default.
-Only question text is embedded. The script reports any embedding truncation.
+cluster sizes and weights to `gsm8k_clustered_50.json` by default.
+Only question text is embedded, using the embedding model’s default token limit.
 
 Install the additional dependencies and call clustering from the experiment:
 
@@ -52,3 +52,24 @@ saved for future approximate dataset summaries; the experiment still reports
 individual trial scores and maxima, without averaging or weighting them.
 Centroid representatives are not an unbiased random sample, and semantic
 coverage does not guarantee coverage of mathematical difficulty.
+
+### Interactive UMAP map
+
+Open `gsm8k_umap.html` in a browser to explore all 8,792 questions. The 50
+saved representatives are gold diamonds. Hover to read questions, scroll to
+zoom, drag to pan, and use the legend or Selected only button to filter.
+The HTML includes Plotly and works offline after downloading.
+
+To rebuild the map from the saved selection:
+
+```sh
+python3 -m pip install -r requirements-visualization.txt
+python3 visualize_gsm8k.py --selection gsm8k_clustered_50.json
+```
+
+The map uses question embeddings and original saved cluster memberships,
+with UMAP seed 0, cosine distance, 15 neighbors, and minimum distance 0.1.
+For compact selection files without memberships, KMeans is rerun with the
+saved seed. The selected IDs remain those in the selection file.
+Projection coordinates and selected flags are also saved in `gsm8k_umap.json`.
+UMAP is a distorted 2D view, not an exact topology or a measure of difficulty.
