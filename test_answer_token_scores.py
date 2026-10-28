@@ -18,6 +18,7 @@ class AnswerScoresTest(unittest.TestCase):
             ("Work\n42", "42"),
             ("The answer is **$18**.", "18"),
             ("Answer: 1/2", "1/2"),
+            ("So, James runs 720 meters per week.", "720"),
             (r"Final answer: \( 180 \) meters.", "180"),
             (r"The final answer is \(\boxed{180 \text{ meters}}\).", "180"),
             ("The final answer is: 2280.", "2280"),
