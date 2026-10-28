@@ -61,6 +61,11 @@ zero scores and should be counted separately when aggregating trials.
 
 ## Run
 
+To measure output length only, run `python3 output_lengths.py`. It samples 20
+distinct GSM8K questions (seed 42), generates one response each with caching,
+and prints the mean output-token count excluding EOS. It flags any responses
+that hit the 2,048-token cap. No sensitivity scores are computed.
+
 ```sh
 python3 -m pip install -r requirements.txt
 python3 experiments.py prompt --prompt 'What is 12 times 15?' --plot
