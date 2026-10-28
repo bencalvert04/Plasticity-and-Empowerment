@@ -80,7 +80,9 @@ within the number are included.
 
 Extraction conservatively checks the last nonempty line for a boxed number,
 an explicit `####` or `answer is/:/=` marker, a standalone numeric answer, or a concluding Thus/Therefore/Hence/So sentence
-with an "is" clause and exactly one numeric value.
+with an "is" clause and exactly one numeric value. Single-number conclusions
+using result verbs such as "runs", "equals", or "totals" are also supported.
+This is heuristic extraction, not semantic answer verification.
 Missing/ambiguous answers, unstable token alignment, and responses without EOS
 are reported as unavailable, never zero. Some valid prose answer formats will
 therefore be missed. Extraction does not check mathematical correctness.
@@ -127,3 +129,70 @@ sampling but does not guarantee bitwise GPU reproducibility. The token cap is
 optional and does not change the original uncapped default. Earlier validation
 smoke-result files outside this repository remain archived as historical runs;
 they are not outputs of this simplified experiment.
+
+### Mid-response injection experiment
+
+```sh
+.venv/bin/python injection_experiment.py --pause-tokens 32 \
+  --max-new-tokens 256 --trials 1 --seed 42 --output ../output/injection-run-01
+```
+
+This is a separate runner. It samples a first assistant span, pauses after exactly
+`--pause-tokens` generated tokens, closes that assistant turn, and supplies the
+injection in a new user turn. Qwen then generates a second assistant span.
+If EOS occurs before or at the pause boundary, the trial is recorded as skipped:
+it does not inject after an already completed response. The continuation cap is
+independent of the first-span budget. No answer-format instruction is added to
+the original question; a common continuation/answer-format instruction appears
+in every follow-up context.
+
+At each continuation position, three independent KV caches evaluate:
+
+1. Full: question + first span + injection and continuation instruction.
+2. Without injection: same conversation with only the injected content removed;
+   the user turn and continuation instruction remain.
+3. Without first span: same conversation with the first assistant content empty;
+   the assistant turn and injected user content remain.
+
+Only the full context generates tokens. All three caches receive exactly those
+same continuation tokens, at their own context positions. First-span token IDs
+are preserved directly, not decoded and re-tokenized. Empty-turn ablations keep
+the chat roles/boundaries, but context lengths/positions still differ. Metrics
+therefore include these positional/context effects; they are not isolated causal
+estimates. The injection experiment is a turn interruption, not insertion of
+user text into an assistant message.
+
+Two comparisons are reported: **injection sensitivity** and **first-span
+sensitivity**. Each has signed entropy reduction (ablated minus full) and
+symmetric Jensen–Shannon divergence over next-token distributions. Full-span
+means exclude EOS. Final-numerical-answer means select only the numerical tokens
+in the continuation, using the existing conservative extractor; truncated or
+unparsed answers have unavailable/null answer scores. Per-token arrays retain
+EOS scores when EOS is sampled, so recompute full-span means excluding EOS.
+These are context-sensitivity proxies, not formal DI or established plasticity
+or empowerment. Earlier output affecting later output is not by itself agent
+control over environmental observations.
+
+Supply reviewed cases with `--cases my_cases.json`:
+
+```json
+{"cases": [{"id": "case-1", "question": "...", "injection": "Correction: ..."}]}
+```
+
+Every case is used unless `--sample N` selects a seeded random subset. The bundled
+case is a hand-authored number-switch demonstration adapted from the GSM8K sprint
+example (60 becomes 80; expected answer 540 becomes 720). Optional reference
+fields are recorded as metadata only: no correctness grading is performed.
+Numerical switches must be written and checked by a researcher, not guessed by
+automatically replacing every matching digit. Different conditions, neutral
+injection controls, and matched injection lengths may be needed for a research
+study; this runner does not add those experimental branches.
+
+`metadata.json` saves cases, versions, model revision, and settings.
+`trials.jsonl` saves both generated spans, exact token IDs for all comparison
+contexts, injection text, EOS/truncation/skip status, per-token scores, and span
+and answer averages. Existing output directories are never overwritten. Seeds
+are assigned per trial; reproducibility across GPU/software versions is not
+guaranteed. Treat output as a pilot, not evidence of scientific validity.
+
+Tests: `.venv/bin/python -m unittest test_injection_experiment.py test_js_scores.py test_answer_token_scores.py`.

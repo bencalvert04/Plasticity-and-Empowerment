@@ -24,6 +24,9 @@ def answer_span(text):
     # Accept a concluding sentence only when its last line has one numeric value.
     if len(list(re.finditer(NUMBER, line.group()))) == 1:
         patterns.append(rf"^\s*(?:Thus|Therefore|Hence|So)\b.*?\bis\s+\**\s*\$?\s*(?P<number>{NUMBER})(?![\d,/]|\.\d)")
+    # Concluding quantity statements with one number and an explicit result verb.
+    if len(list(re.finditer(NUMBER, line.group()))) == 1:
+        patterns.append(rf"^\s*(?:Thus|Therefore|Hence|So)\b.*?\b(?:runs|travels|earns|costs|equals|totals)\s+\**\s*\$?\s*(?P<number>{NUMBER})(?![\d,/]|\.\d)")
     for pattern in patterns:
         matches = list(re.finditer(pattern, line.group(), re.IGNORECASE))
         if matches:
