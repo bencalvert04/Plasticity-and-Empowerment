@@ -14,3 +14,4 @@ __pycache__/
 /representatives.json
 /clusters.png
 /validation/pilot_results.json
+/di_results.json
