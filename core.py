@@ -1,6 +1,7 @@
 """Compare next-token distributions along ONE generated response."""
 import re
 import random
+import math
 
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
@@ -10,7 +11,7 @@ ANSWER = "\nEnd with Final answer: followed by a number on its own line."
 
 
 def entropy(p):
-    return -torch.special.xlogy(p, p).sum() / torch.log(torch.tensor(2.0))
+    return -torch.special.xlogy(p, p).sum() / math.log(2)
 
 
 def compare(full, baseline):
@@ -36,28 +37,30 @@ class Experiment:
             messages, tokenize=True, add_generation_prompt=True, return_dict=False)
 
     @torch.inference_mode()
-    def predict(self, ids):
-        if len(ids) > self.model.config.max_position_embeddings:
+    def predict(self, ids, cache=None):
+        past = cache.get_seq_length() if cache is not None else 0
+        if past + len(ids) > self.model.config.max_position_embeddings:
             raise ValueError("Context limit exceeded")
         x = torch.tensor([ids], device=self.model.device)
-        return self.model(x, use_cache=False).logits[0, -1].float().softmax(-1).cpu()
+        result = self.model(x, past_key_values=cache, use_cache=True, logits_to_keep=1)
+        return result.logits[0, -1].float().softmax(-1), result.past_key_values
 
     def run(self, contexts, limit=125, greedy=False, history=False):
         """First context generates; other contexts receive the SAME output tokens.
 
         history=True adds the fixed question-only baseline used in the original study.
-        No KV caches: each prediction reads the context explicitly.
+        Each context has its own KV cache; subsequent calls process one token.
         """
         if limit < 1:
             raise ValueError("Token limit must be positive")
-        full, *baselines = contexts.values()
         names = list(contexts)[1:] + (["history"] if history else [])
         scores = {name: [] for name in names}
         tokens = []
-        initial = self.predict(full) if history else None
+        states = [self.predict(ids) for ids in contexts.values()]
+        initial = states[0][0]
         for _ in range(limit):
-            p = self.predict(full + tokens)
-            others = [self.predict(ids + tokens) for ids in baselines]
+            p = states[0][0]
+            others = [probabilities for probabilities, _ in states[1:]]
             if history:
                 others.append(initial)
             for name, q in zip(names, others):
@@ -66,6 +69,8 @@ class Experiment:
             tokens.append(token)
             if token in self.eos:
                 break
+            if len(tokens) < limit:
+                states = [self.predict([token], cache) for _, cache in states]
         text = self.tokenizer.decode(tokens, skip_special_tokens=True, clean_up_tokenization_spaces=False)
         done = tokens[-1] in self.eos
         answer = answer_indices(self.tokenizer, tokens, text) if done else []

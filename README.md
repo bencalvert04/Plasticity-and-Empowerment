@@ -11,9 +11,10 @@ estimates of directed information, plasticity, or empowerment.
 3. `explore.py`: optional embedding clusters and a simple UMAP scatter plot.
 
 There is one generation loop. It samples a token from the full context, then
-appends that same token to every ablated context. Predictions are recomputed
-from explicit token lists, without KV caches. This is slower but makes the
-comparison visible. Model loading happens only when an experiment starts.
+appends that same token to every ablated context. Each context has an independent
+KV cache, so its prefix is processed once and later steps process only the newest
+token. Probabilities stay on the model device, and only the last position's logits
+are computed. Model loading happens only when an experiment starts.
 
 ## What we measure
 
@@ -96,7 +97,7 @@ sample or a measure of mathematical difficulty.
 ## Deliberate simplifications
 
 The old script names and APIs are replaced by the commands above. Optional scoring
-flags, unlimited generation, separate caches, flexible answer extraction, HTML
+flags, unlimited generation, flexible answer extraction, HTML
 hover controls, and multi-file result directories are removed. Generated maps
 and dataset copies are no longer tracked. Both metrics are always calculated;
 use JSON arrays for totals or other summaries. No correctness grader is included.

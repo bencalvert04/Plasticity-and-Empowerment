@@ -10,13 +10,35 @@ class Tokenizer:
 
 
 class Tests(unittest.TestCase):
+    def test_real_model_caches_match_full_context(self):
+        from transformers import Qwen2Config, Qwen2ForCausalLM
+        exp = Experiment.__new__(Experiment)
+        exp.model = Qwen2ForCausalLM(Qwen2Config(
+            vocab_size=32, hidden_size=16, intermediate_size=32,
+            num_hidden_layers=1, num_attention_heads=2, num_key_value_heads=1,
+            max_position_embeddings=16)).eval()
+        contexts = [[3, 4], [5]]
+        with torch.inference_mode():
+            states = [exp.predict(ids) for ids in contexts]
+            self.assertIsNot(states[0][1], states[1][1])
+            for token in [6, 7, 8]:
+                for ids, (p, cache) in zip(contexts, states):
+                    expected = exp.model(torch.tensor([ids]), use_cache=False).logits[0, -1].softmax(-1)
+                    torch.testing.assert_close(p, expected, atol=1e-6, rtol=1e-5)
+                    self.assertEqual(cache.get_seq_length(), len(ids))
+                    ids.append(token)
+                states = [exp.predict([token], cache) for _, cache in states]
+            with self.assertRaises(ValueError):
+                exp.predict([1] * 16, states[0][1])
+
     def experiment(self, distribution):
         exp = Experiment.__new__(Experiment)
         exp.tokenizer, exp.eos = Tokenizer(), {2}
         self.seen = []
-        def predict(ids):
+        def predict(ids, cache=None):
+            ids = (cache or []) + ids
             self.seen.append(ids.copy())
-            return torch.tensor(distribution)
+            return torch.tensor(distribution), ids
         exp.predict = predict
         return exp
 
@@ -32,7 +54,7 @@ class Tests(unittest.TestCase):
     def test_shared_history_and_truncation(self):
         exp = self.experiment([0., 1., 0.])
         result = exp.run({'full': [10], 'input': [20]}, 2, history=True)
-        self.assertEqual(self.seen, [[10], [10], [20], [10, 1], [20, 1]])
+        self.assertEqual(self.seen, [[10], [20], [10, 1], [20, 1]])
         self.assertEqual(result['tokens'], [1, 1])
         self.assertFalse(result['complete'])
         self.assertIsNone(result['answer_means']['input'])
@@ -56,10 +78,11 @@ class Tests(unittest.TestCase):
 
     def test_completed_answer_mean_uses_only_numeric_token(self):
         exp = self.experiment([0., 1., 0.])
-        def predict(ids):
+        def predict(ids, cache=None):
+            ids = (cache or []) + ids
             if ids[0] == 20:
-                return torch.tensor([1/3, 1/3, 1/3])
-            return torch.eye(3)[len(ids) - 1]
+                return torch.tensor([1/3, 1/3, 1/3]), ids
+            return torch.eye(3)[len(ids) - 1], ids
         exp.predict = predict
         result = exp.run({'full': [10], 'input': [20]}, 5)
         self.assertEqual(result['answer_indices'], [1])
