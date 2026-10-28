@@ -9,3 +9,7 @@ __pycache__/
 /mean_entropy.png
 /mean_entropy_20_prompts.png
 /run_output_20_prompts.txt
+/results.json
+/injection.json
+/representatives.json
+/clusters.png
