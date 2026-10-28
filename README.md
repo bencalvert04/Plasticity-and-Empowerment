@@ -10,6 +10,10 @@ estimates of directed information, plasticity, or empowerment.
 2. `experiments.py`: choose prompts and run the five experiments below.
 3. `explore.py`: optional embedding clusters and a simple UMAP scatter plot.
 
+The two retained methods are entropy-based context sensitivity and random
+correction injection. The standalone directed-information method has been dropped.
+JS remains a supplementary diagnostic in the existing comparisons.
+
 There is one generation loop. It samples a token from the full context, then
 appends that same token to every ablated context. Each context has an independent
 KV cache, so its prefix is processed once and later steps process only the newest
@@ -30,10 +34,19 @@ Two distributions can have equal entropy yet predict entirely different tokens.
 
 | Score | Baseline compared with the full context |
 |---|---|
-| input | Empty user message, followed by the same output prefix |
-| history | Original question only, fixed at its first-token distribution |
+| input | Question removed, answer-format instruction retained, same output prefix |
+| reasoning (answer means) | Question and answer marker retained, reasoning removed, same answer prefix |
+| history (legacy token diagnostic) | Original question only, fixed at its first-token distribution |
 | injection | Same interrupted conversation, but empty correction content |
 | first_span | Same corrected conversation, but empty first assistant span |
+
+For numerical answer tokens, `answer_means.input` and `answer_means.reasoning`
+are the two comparisons of interest. Each contains `[entropy difference, JS]`.
+The reasoning comparison replays the observed answer tokens with independent
+caches; it retains the answer marker and already-generated answer prefix, not
+the first-token prediction. `reasoning_answer_scores` stores those per-answer-token
+values. The token containing the marker is retained even if it starts with whitespace.
+`scores.history` remains a diagnostic for older plots and is excluded from answer means.
 
 The injection experiment pauses after a uniformly random 1–32 tokens and inserts a
 new user turn. All three conditions retain the same message roles and final-answer
@@ -47,6 +60,11 @@ chosen interruption point. If EOS occurs within the window, means are null;
 zero scores and should be counted separately when aggregating trials.
 
 ## Run
+
+To measure output length only, run `python3 output_lengths.py`. It samples 20
+distinct GSM8K questions (seed 42), generates one response each with caching,
+and prints the mean output-token count excluding EOS. It flags any responses
+that hit the 2,048-token cap. No sensitivity scores are computed.
 
 ```sh
 python3 -m pip install -r requirements.txt
@@ -77,7 +95,9 @@ Start with `--tokens 8` for a quick non-injection execution check.
 JSON output contains settings, text, exact generated token IDs, completion status,
 per-token scores (including EOS), and numerical-answer means. A capped response
 has `complete: false`; its answer means are null. Only a completed response ending
-with `Final answer: 720` (signed integers or decimals) is recognized. Unexpected
+with `Final answer: 720` (signed integers or decimals, optional commas, dollar sign,
+or trailing units) or a final LaTeX boxed number is recognized. Alternatives and
+fractions are rejected. Unexpected
 formats and unstable decoded token boundaries produce no answer score. Answer
 means include tokens overlapping the number, excluding explanation and EOS.
 Scores are computed before sampling the corresponding token.
@@ -105,3 +125,8 @@ use JSON arrays for totals or other summaries. No correctness grader is included
 Context ablations have different lengths and are not marginalization over possible
 histories. Prompt length can also change output length, so summed scores mix both
 effects. A downward curve does not prove convergence to zero.
+
+These scores describe predictions along a fixed sampled response, not correlations
+between datasets or the probability of the whole answer. An answer can be wrong
+and still have a large score. The question may also be repeated in the reasoning,
+so removing the original question does not remove all information about it.

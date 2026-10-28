@@ -13,3 +13,5 @@ __pycache__/
 /injection.json
 /representatives.json
 /clusters.png
+/validation/pilot_results.json
+/di_results.json

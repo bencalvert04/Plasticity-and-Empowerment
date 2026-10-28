@@ -21,6 +21,29 @@ def gsm8k():
     return records
 
 
+def compact_result(row, experiment, tokenizer):
+    """Save measurements and identifiers; keep token-level records behind --details."""
+    compact = {key: row[key] for key in ("id", "trial", "length") if key in row}
+    if "case" in row:
+        compact.update(id=row["case"]["id"], correction=row["case"]["injection"], pause=row["pause"])
+        if "skipped" in row:
+            return dict(compact, skipped=row["skipped"])
+        compact.update(scored_tokens=row["scored_tokens"], window_means=row["window_means"])
+    elif "id" not in row:
+        compact["prompt"] = row["prompt"]
+    result = row.get("continuation", row)
+    answer_tokens = [result["tokens"][i] for i in result["answer_indices"]]
+    answer = tokenizer.decode(answer_tokens, skip_special_tokens=True).strip() if answer_tokens else None
+    compact.update(answer=answer, complete=result["complete"],
+                   token_count=len(result["tokens"]), answer_means=result["answer_means"])
+    if experiment in ("position", "length"):
+        compact["score_means"] = {name: np.mean(values, axis=0).tolist()
+                                  for name, values in result["scores"].items()}
+        compact["score_totals"] = {name: np.sum(values, axis=0).tolist()
+                                   for name, values in result["scores"].items()}
+    return compact
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("experiment", choices=["prompt", "position", "length", "gsm8k", "injection"])
@@ -31,6 +54,7 @@ def main():
     parser.add_argument("--pause-max", type=int, default=32, help="Inject after a uniform random 1..N tokens")
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--plot", action="store_true")
+    parser.add_argument("--details", action="store_true", help="Save full text, token IDs and per-token scores")
     args = parser.parse_args()
     if min(args.tokens, args.sample, args.trials, args.pause_max) < 1:
         parser.error("Counts must be positive")
@@ -65,7 +89,9 @@ def main():
             for trial in range(args.trials):
                 rows.append(dict(case=case, trial=trial, **exp.inject(
                     case["question"], case["injection"], args.pause_max)))
-    print(json.dumps(dict(model=MODEL, settings=vars(args), results=rows), indent=2))
+    saved = rows if args.details else [compact_result(row, args.experiment, exp.tokenizer) for row in rows]
+    print(json.dumps(dict(model=MODEL, settings=vars(args),
+                         metric_order=["entropy_difference_bits", "js_bits"], results=saved), indent=2))
     if args.plot:
         if args.experiment == "length":
             lengths = sorted({r["length"] for r in rows})
