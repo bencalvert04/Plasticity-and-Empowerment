@@ -1,4 +1,5 @@
 import unittest
+from unittest.mock import patch
 import torch
 from core import Experiment, answer_indices, compare, entropy
 
@@ -9,13 +10,35 @@ class Tokenizer:
 
 
 class Tests(unittest.TestCase):
+    def test_real_model_caches_match_full_context(self):
+        from transformers import Qwen2Config, Qwen2ForCausalLM
+        exp = Experiment.__new__(Experiment)
+        exp.model = Qwen2ForCausalLM(Qwen2Config(
+            vocab_size=32, hidden_size=16, intermediate_size=32,
+            num_hidden_layers=1, num_attention_heads=2, num_key_value_heads=1,
+            max_position_embeddings=16)).eval()
+        contexts = [[3, 4], [5]]
+        with torch.inference_mode():
+            states = [exp.predict(ids) for ids in contexts]
+            self.assertIsNot(states[0][1], states[1][1])
+            for token in [6, 7, 8]:
+                for ids, (p, cache) in zip(contexts, states):
+                    expected = exp.model(torch.tensor([ids]), use_cache=False).logits[0, -1].softmax(-1)
+                    torch.testing.assert_close(p, expected, atol=1e-6, rtol=1e-5)
+                    self.assertEqual(cache.get_seq_length(), len(ids))
+                    ids.append(token)
+                states = [exp.predict([token], cache) for _, cache in states]
+            with self.assertRaises(ValueError):
+                exp.predict([1] * 16, states[0][1])
+
     def experiment(self, distribution):
         exp = Experiment.__new__(Experiment)
         exp.tokenizer, exp.eos = Tokenizer(), {2}
         self.seen = []
-        def predict(ids):
+        def predict(ids, cache=None):
+            ids = (cache or []) + ids
             self.seen.append(ids.copy())
-            return torch.tensor(distribution)
+            return torch.tensor(distribution), ids
         exp.predict = predict
         return exp
 
@@ -31,7 +54,7 @@ class Tests(unittest.TestCase):
     def test_shared_history_and_truncation(self):
         exp = self.experiment([0., 1., 0.])
         result = exp.run({'full': [10], 'input': [20]}, 2, history=True)
-        self.assertEqual(self.seen, [[10], [10], [20], [10, 1], [20, 1]])
+        self.assertEqual(self.seen, [[10], [20], [10, 1], [20, 1]])
         self.assertEqual(result['tokens'], [1, 1])
         self.assertFalse(result['complete'])
         self.assertIsNone(result['answer_means']['input'])
@@ -55,10 +78,11 @@ class Tests(unittest.TestCase):
 
     def test_completed_answer_mean_uses_only_numeric_token(self):
         exp = self.experiment([0., 1., 0.])
-        def predict(ids):
+        def predict(ids, cache=None):
+            ids = (cache or []) + ids
             if ids[0] == 20:
-                return torch.tensor([1/3, 1/3, 1/3])
-            return torch.eye(3)[len(ids) - 1]
+                return torch.tensor([1/3, 1/3, 1/3]), ids
+            return torch.eye(3)[len(ids) - 1], ids
         exp.predict = predict
         result = exp.run({'full': [10], 'input': [20]}, 5)
         self.assertEqual(result['answer_indices'], [1])
@@ -68,13 +92,36 @@ class Tests(unittest.TestCase):
     def test_injection_preserves_exact_tokens_and_turns(self):
         exp = self.experiment([0., 1., 0.])
         exp.chat = lambda *texts: [10] if len(texts) == 1 else [10, 20, len(texts[-1]), 30]
-        exp.inject('Question', 'Correction', pause=1, limit=2)
+        result = exp.inject('Question', 'Correction', pause_max=1)
         full, no_injection, no_span = self.seen[1:4]
         self.assertEqual(full[:2], [10, 1])
         self.assertEqual(no_injection[:2], [10, 1])
         self.assertEqual(no_span, full[:1] + full[2:])
         self.assertNotEqual(full, no_injection)
-        self.assertEqual(self.seen[4:], [ids + [1] for ids in [full, no_injection, no_span]])
+        self.assertEqual(self.seen[4:7], [ids + [1] for ids in [full, no_injection, no_span]])
+        self.assertEqual(result['scored_tokens'], 10)
+        self.assertEqual(len(result['continuation']['tokens']), 10)
+
+    def test_random_pause_and_ten_token_mean(self):
+        exp = self.experiment([0., 1., 0.])
+        exp.chat = lambda *texts: [10]
+        values = [[float(i), i / 10] for i in range(10)]
+        first = dict(complete=False, tokens=[1] * 7)
+        continuation = dict(tokens=[1] * 10, scores={'injection': values})
+        with patch('core.random.randint', return_value=7) as draw, patch.object(
+                exp, 'run', side_effect=[first, continuation]) as run:
+            result = exp.inject('Q', 'Correction', pause_max=32)
+        draw.assert_called_once_with(1, 32)
+        self.assertEqual(run.call_args_list[0].args[1], 7)
+        self.assertEqual(run.call_args_list[1].args[1], 10)
+        self.assertEqual(result['pause'], 7)
+        self.assertAlmostEqual(result['window_means']['injection'][0], 4.5)
+        self.assertAlmostEqual(result['window_means']['injection'][1], 0.45)
+        continuation = dict(tokens=[1, 2], scores={'injection': values[:2]})
+        with patch.object(exp, 'run', side_effect=[first, continuation]):
+            result = exp.inject('Q', 'Correction')
+        self.assertEqual(result['scored_tokens'], 1)
+        self.assertIsNone(result['window_means']['injection'])
 
 
 if __name__ == '__main__':

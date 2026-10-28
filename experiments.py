@@ -25,14 +25,14 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("experiment", choices=["prompt", "position", "length", "gsm8k", "injection"])
     parser.add_argument("--prompt", default="What is 12 times 15?")
-    parser.add_argument("--tokens", type=int, default=125)
+    parser.add_argument("--tokens", type=int, default=125, help="Output cap for non-injection experiments")
     parser.add_argument("--sample", type=int, default=10)
     parser.add_argument("--trials", type=int, default=1)
-    parser.add_argument("--pause", type=int, default=32)
+    parser.add_argument("--pause-max", type=int, default=32, help="Inject after a uniform random 1..N tokens")
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--plot", action="store_true")
     args = parser.parse_args()
-    if min(args.tokens, args.sample, args.trials, args.pause) < 1:
+    if min(args.tokens, args.sample, args.trials, args.pause_max) < 1:
         parser.error("Counts must be positive")
     random.seed(args.seed)
     torch.manual_seed(args.seed)
@@ -64,7 +64,7 @@ def main():
         for case in cases:
             for trial in range(args.trials):
                 rows.append(dict(case=case, trial=trial, **exp.inject(
-                    case["question"], case["injection"], args.pause, args.tokens)))
+                    case["question"], case["injection"], args.pause_max)))
     print(json.dumps(dict(model=MODEL, settings=vars(args), results=rows), indent=2))
     if args.plot:
         if args.experiment == "length":

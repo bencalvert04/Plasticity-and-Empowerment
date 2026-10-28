@@ -11,9 +11,10 @@ estimates of directed information, plasticity, or empowerment.
 3. `explore.py`: optional embedding clusters and a simple UMAP scatter plot.
 
 There is one generation loop. It samples a token from the full context, then
-appends that same token to every ablated context. Predictions are recomputed
-from explicit token lists, without KV caches. This is slower but makes the
-comparison visible. Model loading happens only when an experiment starts.
+appends that same token to every ablated context. Each context has an independent
+KV cache, so its prefix is processed once and later steps process only the newest
+token. Probabilities stay on the model device, and only the last position's logits
+are computed. Model loading happens only when an experiment starts.
 
 ## What we measure
 
@@ -34,10 +35,16 @@ Two distributions can have equal entropy yet predict entirely different tokens.
 | injection | Same interrupted conversation, but empty correction content |
 | first_span | Same corrected conversation, but empty first assistant span |
 
-The injection experiment pauses after a fixed number of tokens and inserts a
+The injection experiment pauses after a uniformly random 1–32 tokens and inserts a
 new user turn. All three conditions retain the same message roles and final-answer
 instruction. The original first-span token IDs are preserved exactly.
 If the first response ends before the pause, the injection is skipped.
+`--pause-max` changes the upper bound; `--seed` seeds the random selection.
+Only the first 10 continuation tokens are scored. `window_means` contains the
+arithmetic mean of each metric across those 10 tokens, and `pause` records the
+chosen interruption point. If EOS occurs within the window, means are null;
+`scored_tokens` records the available non-EOS count. Skipped/short runs are not
+zero scores and should be counted separately when aggregating trials.
 
 ## Run
 
@@ -47,7 +54,7 @@ python3 experiments.py prompt --prompt 'What is 12 times 15?' --plot
 python3 experiments.py position --plot
 python3 experiments.py length --plot
 python3 experiments.py gsm8k --sample 10 --trials 3 --tokens 256 > results.json
-python3 experiments.py injection --pause 32 --tokens 256 > injection.json
+python3 experiments.py injection --pause-max 32 --trials 5 > injection.json
 python3 -m unittest -v
 ```
 
@@ -64,7 +71,8 @@ sample the full softmax at temperature 1. Change correction examples in
 All runs use Qwen2.5-0.5B-Instruct, Apple MPS when available, otherwise CPU.
 The first run downloads the model. `--seed` defaults to 42; this does not promise
 bit-for-bit reproducibility across devices. `--tokens` defaults to 125 and caps
-generation. Start with `--tokens 8` for a quick execution check.
+non-injection generation. Injection always uses a 10-token continuation window.
+Start with `--tokens 8` for a quick non-injection execution check.
 
 JSON output contains settings, text, exact generated token IDs, completion status,
 per-token scores (including EOS), and numerical-answer means. A capped response
@@ -89,7 +97,7 @@ sample or a measure of mathematical difficulty.
 ## Deliberate simplifications
 
 The old script names and APIs are replaced by the commands above. Optional scoring
-flags, unlimited generation, separate caches, flexible answer extraction, HTML
+flags, unlimited generation, flexible answer extraction, HTML
 hover controls, and multi-file result directories are removed. Generated maps
 and dataset copies are no longer tracked. Both metrics are always calculated;
 use JSON arrays for totals or other summaries. No correctness grader is included.
