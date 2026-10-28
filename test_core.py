@@ -1,4 +1,5 @@
 import unittest
+from unittest.mock import patch
 import torch
 from core import Experiment, answer_indices, compare, entropy
 
@@ -68,13 +69,36 @@ class Tests(unittest.TestCase):
     def test_injection_preserves_exact_tokens_and_turns(self):
         exp = self.experiment([0., 1., 0.])
         exp.chat = lambda *texts: [10] if len(texts) == 1 else [10, 20, len(texts[-1]), 30]
-        exp.inject('Question', 'Correction', pause=1, limit=2)
+        result = exp.inject('Question', 'Correction', pause_max=1)
         full, no_injection, no_span = self.seen[1:4]
         self.assertEqual(full[:2], [10, 1])
         self.assertEqual(no_injection[:2], [10, 1])
         self.assertEqual(no_span, full[:1] + full[2:])
         self.assertNotEqual(full, no_injection)
-        self.assertEqual(self.seen[4:], [ids + [1] for ids in [full, no_injection, no_span]])
+        self.assertEqual(self.seen[4:7], [ids + [1] for ids in [full, no_injection, no_span]])
+        self.assertEqual(result['scored_tokens'], 10)
+        self.assertEqual(len(result['continuation']['tokens']), 10)
+
+    def test_random_pause_and_ten_token_mean(self):
+        exp = self.experiment([0., 1., 0.])
+        exp.chat = lambda *texts: [10]
+        values = [[float(i), i / 10] for i in range(10)]
+        first = dict(complete=False, tokens=[1] * 7)
+        continuation = dict(tokens=[1] * 10, scores={'injection': values})
+        with patch('core.random.randint', return_value=7) as draw, patch.object(
+                exp, 'run', side_effect=[first, continuation]) as run:
+            result = exp.inject('Q', 'Correction', pause_max=32)
+        draw.assert_called_once_with(1, 32)
+        self.assertEqual(run.call_args_list[0].args[1], 7)
+        self.assertEqual(run.call_args_list[1].args[1], 10)
+        self.assertEqual(result['pause'], 7)
+        self.assertAlmostEqual(result['window_means']['injection'][0], 4.5)
+        self.assertAlmostEqual(result['window_means']['injection'][1], 0.45)
+        continuation = dict(tokens=[1, 2], scores={'injection': values[:2]})
+        with patch.object(exp, 'run', side_effect=[first, continuation]):
+            result = exp.inject('Q', 'Correction')
+        self.assertEqual(result['scored_tokens'], 1)
+        self.assertIsNone(result['window_means']['injection'])
 
 
 if __name__ == '__main__':

@@ -1,5 +1,6 @@
 """Compare next-token distributions along ONE generated response."""
 import re
+import random
 
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
@@ -76,10 +77,11 @@ class Experiment:
     def prompt(self, text, limit=125, greedy=False):
         return self.run({"full": self.chat(text), "input": self.chat("")}, limit, greedy, history=True)
 
-    def inject(self, question, correction, pause=32, limit=256):
+    def inject(self, question, correction, pause_max=32):
+        pause = random.randint(1, pause_max)
         first = self.run({"full": self.chat(question)}, pause)
         if first["complete"]:
-            return dict(first=first, skipped="Response ended before interruption")
+            return dict(pause=pause, first=first, skipped="Response ended before interruption")
         # Splice exact sampled IDs into the assistant turn, including partial byte tokens.
         def context(span, message):
             prefix = self.chat(question)
@@ -89,7 +91,12 @@ class Experiment:
         contexts = {"full": context(first["tokens"], correction),
                     "injection": context(first["tokens"], ""),
                     "first_span": context([], correction)}
-        return dict(first=first, continuation=self.run(contexts, limit))
+        continuation = self.run(contexts, 10)
+        count = sum(token not in self.eos for token in continuation["tokens"])
+        means = {name: torch.tensor(values).mean(0).tolist() if count == 10 else None
+                 for name, values in continuation["scores"].items()}
+        return dict(pause=pause, first=first, continuation=continuation,
+                    scored_tokens=count, window_means=means)
 
 
 def answer_indices(tokenizer, tokens, text):
