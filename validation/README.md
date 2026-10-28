@@ -1,7 +1,10 @@
 # Method audit
 
-Verdict: numerically working sensitivity measurements, not three validated measures
+Verdict: numerically working sensitivity measurements, not validated measures
 of plasticity or empowerment. Do not treat this pilot as a research result.
+
+The standalone directed-information method was subsequently dropped. This audit
+records the retained entropy and injection experiments, including their JS diagnostics.
 
 ## Definitions and fixes
 

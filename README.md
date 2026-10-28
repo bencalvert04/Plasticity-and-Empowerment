@@ -9,21 +9,10 @@ estimates of directed information, plasticity, or empowerment.
 1. `core.py`: load Qwen, predict the next token, compare contexts, repeat.
 2. `experiments.py`: choose prompts and run the five experiments below.
 3. `explore.py`: optional embedding clusters and a simple UMAP scatter plot.
-4. `directed_information.py`: conditional directed information for a declared
-   pool of question and reasoning token blocks. This is the second method's
-   DI estimator; the old JS values below remain ablation diagnostics.
 
-To run the DI estimator with the included, explicitly controlled GSM8K example:
-
-```sh
-python3 directed_information.py --sources di_sources.example.json --trials 32 --answer-tokens 32 > di_results.json
-```
-
-It estimates both input-to-answer given reasoning and reasoning-to-answer given
-input. The source distribution must be explicit: the example crosses two questions
-and two recorded model reasoning blocks uniformly, including mismatched pairs.
-It does not estimate the natural GSM8K population distribution. See
-[the estimator definition](DIRECTED_INFORMATION.md) before interpreting its values.
+The two retained methods are entropy-based context sensitivity and random
+correction injection. The standalone directed-information method has been dropped.
+JS remains a supplementary diagnostic in the existing comparisons.
 
 There is one generation loop. It samples a token from the full context, then
 appends that same token to every ablated context. Each context has an independent
