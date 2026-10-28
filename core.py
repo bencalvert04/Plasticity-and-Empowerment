@@ -80,7 +80,32 @@ class Experiment:
                         for name, values in scores.items()})
 
     def prompt(self, text, limit=125, greedy=False):
-        return self.run({"full": self.chat(text), "input": self.chat("")}, limit, greedy, history=True)
+        baseline = ANSWER if text.endswith(ANSWER) else ""
+        result = self.run({"full": self.chat(text), "input": self.chat(baseline)}, limit, greedy, history=True)
+        result["answer_means"].pop("history", None)  # This diagnostic is not reasoning-to-answer.
+        result["answer_means"]["reasoning"] = None
+        if result["answer_indices"]:
+            result.update(self.reasoning_answer(text, result))
+        return result
+
+    def reasoning_answer(self, question, result):
+        """Replay the same answer tokens with and without the preceding reasoning."""
+        tokens, indices = result["tokens"], result["answer_indices"]
+        marker = answer_match(result["text"]).start("marker")
+        # Retain the token containing the answer marker (possibly a leading newline).
+        boundary = next(i for i in range(indices[0] + 1) if len(self.tokenizer.decode(
+            tokens[:i + 1], skip_special_tokens=True, clean_up_tokenization_spaces=False)) > marker)
+        full = self.chat(question) + tokens[:indices[0]]
+        without_reasoning = self.chat(question) + tokens[boundary:indices[0]]
+        states = [self.predict(ids) for ids in (full, without_reasoning)]
+        values = []
+        for i in range(indices[0], indices[-1] + 1):
+            if i in indices:
+                values.append(compare(states[0][0], states[1][0]))
+            if i < indices[-1]:
+                states = [self.predict([tokens[i]], cache) for _, cache in states]
+        result["answer_means"]["reasoning"] = torch.tensor(values).mean(0).tolist()
+        return dict(reasoning_answer_scores=values, reasoning_end_token=boundary)
 
     def inject(self, question, correction, pause_max=32):
         pause = random.randint(1, pause_max)
@@ -104,14 +129,25 @@ class Experiment:
                     scored_tokens=count, window_means=means)
 
 
+def answer_match(text):
+    # Explicit final marker, one number, optional currency/units. Reject alternatives.
+    number = r"[+-]?(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?"
+    match = re.search(rf"(?im)^[ \t]*(?P<marker>final answer:)\s*\$?\s*(?P<number>{number})"
+                      r"(?P<units>[%A-Za-z .]*)\s*\Z", text)
+    if match:
+        return match if not re.search(r"\b(?:or|and)\b", match['units'], re.I) else None
+    return re.search(rf"(?P<marker>\\boxed\{{)\s*(?P<number>{number})\s*\}}"
+                     r"(?:\s|\\\]|\\\)|[.$])*\Z", text)
+
+
 def answer_indices(tokenizer, tokens, text):
-    match = re.search(r"Final answer:\s*([+-]?\d+(?:\.\d+)?)\s*$", text)
+    match = answer_match(text)
     if not match:
         return []
     prefixes = [tokenizer.decode(tokens[:i], skip_special_tokens=True,
                                 clean_up_tokenization_spaces=False) for i in range(len(tokens) + 1)]
     if any(not text.startswith(prefix) for prefix in prefixes):
         return []
-    start, end = match.span(1)
+    start, end = match.span("number")
     return [i for i in range(len(tokens)) if len(prefixes[i]) < end
             and len(prefixes[i + 1]) > start and len(prefixes[i + 1]) > len(prefixes[i])]

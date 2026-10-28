@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import patch
 import torch
-from core import Experiment, answer_indices, compare, entropy
+from core import ANSWER, Experiment, answer_indices, answer_match, compare, entropy
 
 
 class Tokenizer:
@@ -75,6 +75,37 @@ class Tests(unittest.TestCase):
         self.assertEqual(answer_indices(tok, [0, 1, 2], 'Final answer: 7'), [1])
         for text in ['The intermediate value is 7', 'Final answer: 7 or 8', 'Final answer: 7/8']:
             self.assertEqual(answer_indices(tok, [0, 1, 2], text), [])
+
+    def test_units_and_ambiguous_answers(self):
+        for text, number in [('Final answer: 395 food items.', '395'),
+                             ('Final answer: $1,200.50', '1,200.50'),
+                             ('Thus:\n\\[\n\\boxed{395}\n\\]', '395'),
+                             ('Final answer: -2.5 meters', '-2.5')]:
+            self.assertEqual(answer_match(text)['number'], number)
+        for text in ['Final answer: 3 or four', 'Final answer: 7/8',
+                     'Final answer: 3 and 4', 'Final answer: 1e3', 'Intermediate: 3']:
+            self.assertIsNone(answer_match(text))
+
+    def test_reasoning_removed_but_answer_prefix_retained(self):
+        exp = self.experiment([0.1, 0.8, 0.1])
+        exp.tokenizer.decode = lambda ids, **kw: ''.join(
+            {0: 'Reasoning.\n', 1: 'Final answer: ', 2: '3', 3: '9', 4: ''}[i] for i in ids)
+        exp.chat = lambda *texts: [10]
+        result = dict(tokens=[0, 1, 2, 3, 4], text='Reasoning.\nFinal answer: 39',
+                      answer_indices=[2, 3], answer_means={})
+        extra = exp.reasoning_answer('Q', result)
+        self.assertEqual(self.seen, [[10, 0, 1], [10, 1], [10, 0, 1, 2], [10, 1, 2]])
+        self.assertEqual(extra['reasoning_end_token'], 1)
+        self.assertEqual(result['answer_means']['reasoning'], [0, 0])
+
+    def test_input_ablation_keeps_answer_instruction(self):
+        exp = self.experiment([0.1, 0.8, 0.1])
+        exp.chat = lambda text: text
+        result = dict(answer_indices=[], answer_means={'input': None, 'history': None})
+        with patch.object(exp, 'run', return_value=result) as run:
+            exp.prompt('Q' + ANSWER)
+        self.assertEqual(run.call_args.args[0], {'full': 'Q' + ANSWER, 'input': ANSWER})
+        self.assertNotIn('history', result['answer_means'])
 
     def test_completed_answer_mean_uses_only_numeric_token(self):
         exp = self.experiment([0., 1., 0.])
