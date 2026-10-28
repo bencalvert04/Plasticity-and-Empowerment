@@ -24,6 +24,8 @@ def gsm8k():
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("experiment", choices=["prompt", "position", "length", "gsm8k", "injection"])
+    parser.add_argument("--cases", type=Path, default=Path(__file__).with_name("injection_cases.example.json"),
+                        help="JSON case file for the injection experiment")
     parser.add_argument("--prompt", default="What is 12 times 15?")
     parser.add_argument("--tokens", type=int, default=125, help="Output cap for non-injection experiments")
     parser.add_argument("--sample", type=int, default=10)
@@ -60,12 +62,12 @@ def main():
                 rows.append(dict(id=question["id"], prompt=question["question"], trial=trial,
                                  **exp.prompt(question["question"] + ANSWER, args.tokens)))
     else:
-        cases = json.loads(Path(__file__).with_name("injection_cases.example.json").read_text())["cases"]
+        cases = json.loads(args.cases.read_text())["cases"]
         for case in cases:
             for trial in range(args.trials):
                 rows.append(dict(case=case, trial=trial, **exp.inject(
                     case["question"], case["injection"], args.pause_max)))
-    print(json.dumps(dict(model=MODEL, settings=vars(args), results=rows), indent=2))
+    print(json.dumps(dict(model=MODEL, settings={**vars(args), "cases": str(args.cases)}, results=rows), indent=2))
     if args.plot:
         if args.experiment == "length":
             lengths = sorted({r["length"] for r in rows})
