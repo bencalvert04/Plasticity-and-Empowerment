@@ -62,3 +62,68 @@ For compact selection files without memberships, KMeans is rerun with the
 saved seed. The selected IDs remain those in the selection file.
 Projection coordinates and selected flags are also saved in `gsm8k_umap.json`.
 UMAP is a distorted 2D view, not an exact topology or a measure of difficulty.
+
+### Optional final numerical-answer scores
+
+```sh
+python3 gsm8k_directed_information.py --sample 10 --trials 5 --answer-only-scores
+```
+
+This adds two per-response means while retaining all original full-response
+outputs and leaving the prompt and sampling unchanged. It selects the original
+generated tokens overlapping the final numerical answer and averages each of
+the existing score arrays over those positions. For three answer tokens the
+denominator is three, not the length of the whole response. EOS and explanation
+tokens are excluded. A token containing both numeric text and adjacent characters
+is indivisible and is counted once. Signs, decimals, and grouping punctuation
+within the number are included.
+
+Extraction conservatively checks the last nonempty line for a boxed number,
+an explicit `####` or `answer is/:/=` marker, a standalone numeric answer, or a concluding Thus/Therefore/Hence/So sentence
+with an "is" clause and exactly one numeric value.
+Missing/ambiguous answers, unstable token alignment, and responses without EOS
+are reported as unavailable, never zero. Some valid prose answer formats will
+therefore be missed. Extraction does not check mathematical correctness.
+
+The input score removes the question while retaining all preceding output.
+The history score retains the question and compares the original question-only
+entropy to the entropy with the entire preceding output (including any earlier
+digits of the answer). It does not isolate only the explanation before the
+answer. These remain next-token vocabulary entropy differences evaluated at
+answer positions, not information carried by the realized numeral, formal DI,
+or established plasticity/empowerment estimates. No new cross-trial maximum or
+dataset aggregate is introduced.
+
+Dependency-free extraction/alignment tests: `python3 -m unittest test_answer_token_scores.py`.
+
+### Optional Jensen–Shannon comparisons and saved records
+
+```sh
+.venv/bin/python gsm8k_directed_information.py --sample 10 --trials 3 \
+  --answer-only-scores --js-scores --max-new-tokens 256 --seed 42 \
+  --output ../output/answer-js-run-01
+```
+
+No follow-ups, hints, corrections, or correctness grading are added. The original
+question and generation procedure are retained. JS compares exactly the same
+context pairs as the original entropy proxies: question+history versus empty
+question+history, and question+history versus question alone. It uses the full
+vocabulary distributions, in float32 and base-2 units, at each generated token.
+JS is symmetric and bounded by 1 bit per position; it is not directed information
+or an established empowerment measure. The history comparison retains the
+original first-token-distribution baseline, including its position mismatch.
+
+With both scoring flags, each JS score is averaged over the same extracted
+numerical-answer token positions as the answer entropy score. Whole-response
+means include EOS like the original code; answer means exclude EOS. Missing or
+truncated answers are unavailable rather than zero. No independent generations
+are aligned or compared.
+
+`--output` writes metadata.json (settings, sampled question IDs/text, model
+revision) and incrementally appends trials.jsonl (response, token IDs, EOS status,
+per-token entropy/JS values, and answer averages). Existing output directories
+are refused. Saved records have no correctness labels. `--seed` controls random
+sampling but does not guarantee bitwise GPU reproducibility. The token cap is
+optional and does not change the original uncapped default. Earlier validation
+smoke-result files outside this repository remain archived as historical runs;
+they are not outputs of this simplified experiment.

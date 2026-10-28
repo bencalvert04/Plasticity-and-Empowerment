@@ -13,8 +13,17 @@ def entropy(logits):
     return -(log_p.exp() * log_p).sum().item() / math.log(2)
 
 
+def jensen_shannon(logits_a, logits_b):
+    """Symmetric full-vocabulary distribution distance in bits, bounded by 1."""
+    a = logits_a.float().log_softmax(dim=-1)
+    b = logits_b.float().log_softmax(dim=-1)
+    m = torch.logaddexp(a, b) - math.log(2)
+    return max(0.0, ((a.exp() * (a - m)).sum() +
+                     (b.exp() * (b - m)).sum()).item() / (2 * math.log(2)))
+
+
 @torch.inference_mode()
-def generate_and_score(model, tokenizer, prompt, max_new_tokens=125):
+def generate_and_score(model, tokenizer, prompt, max_new_tokens=125, *, return_details=False, compute_js=False):
     if tokenizer.chat_template:
         def chat_ids(text):
             return tokenizer.apply_chat_template(
@@ -53,6 +62,8 @@ def generate_and_score(model, tokenizer, prompt, max_new_tokens=125):
     # Separate caches are needed because these contexts have different prefixes.
     logits, input_cache = predict(input_ids)
     baseline_logits, baseline_cache = predict(baseline)
+    question_only_logits = logits.clone() if compute_js else None
+    input_js, history_js = [], []
     entropy_without_previous_output = entropy(logits)
     output, dir_inf_ItoO, dir_inf_POtoFO = [], [], []
     while max_new_tokens is None or len(output) < max_new_tokens:
@@ -65,6 +76,9 @@ def generate_and_score(model, tokenizer, prompt, max_new_tokens=125):
         dir_inf_ItoO.append(entropy(baseline_logits) - entropy_with_previous_output)
         # Keep the input in both contexts; remove only previous output in the first.
         dir_inf_POtoFO.append(entropy_without_previous_output - entropy_with_previous_output)
+        if compute_js:
+            input_js.append(jensen_shannon(baseline_logits, logits))
+            history_js.append(jensen_shannon(question_only_logits, logits))
         # token = logits.argmax().item()
         probabilities = logits.float().softmax(dim=-1)
         token = torch.multinomial(probabilities, num_samples=1).item()
@@ -72,7 +86,11 @@ def generate_and_score(model, tokenizer, prompt, max_new_tokens=125):
         if token in eos_ids:
             break
 
-    return tokenizer.decode(output, skip_special_tokens=True), dir_inf_ItoO, dir_inf_POtoFO
+    result = (tokenizer.decode(output, skip_special_tokens=True), dir_inf_ItoO, dir_inf_POtoFO)
+    if return_details:
+        return (*result, {"token_ids": output, "ended_with_eos": bool(output and output[-1] in eos_ids),
+                          "input_js_bits": input_js, "history_js_bits": history_js})
+    return result
 
 
 if __name__ == "__main__":
