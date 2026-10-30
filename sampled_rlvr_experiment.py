@@ -20,11 +20,29 @@ METRICS = ('input', 'injection', 'empowerment')
 HORIZON = 20
 
 
-def chat(tokenizer, prompt, injection=None):
+def chat(tokenizer, prompt, injection=None, chat_mode='native'):
     messages = [{'role': 'user', 'content': prompt}]
     if injection is not None:
         messages += [{'role': 'assistant', 'content': ''}, {'role': 'user', 'content': injection}]
-    return tokenizer.apply_chat_template(messages, tokenize=True, add_generation_prompt=True, return_dict=False)
+    kwargs = {'enable_thinking': False} if chat_mode == 'qwen3_nonthinking' else {}
+    return tokenizer.apply_chat_template(messages, tokenize=True, add_generation_prompt=True, return_dict=False, **kwargs)
+
+
+def continuation_prefix(tokenizer, prompt, injection, tokens, chat_mode='native'):
+    """Splice generated IDs exactly, retaining Qwen3's forced empty thinking block."""
+    full = chat(tokenizer, prompt, chat_mode=chat_mode)
+    framing = chat(tokenizer, prompt, injection, chat_mode)
+    boundary = len(full)
+    if chat_mode == 'qwen3_nonthinking':
+        thinking = tokenizer.encode('<think>\n\n</think>\n\n', add_special_tokens=False)
+        if full[-len(thinking):] != thinking:
+            raise ValueError('Expected the Qwen3 non-thinking generation suffix')
+        # The native multi-turn template omits this forced suffix in historical
+        # empty assistant messages. Keep it in A, including the empty-A baseline.
+        boundary -= len(thinking)
+    if framing[:boundary] != full[:boundary]:
+        raise ValueError('Chat template does not support exact token splicing')
+    return full + tokens + framing[boundary:]
 
 
 @torch.inference_mode()
@@ -77,23 +95,20 @@ def measure(entropies, baseline, complete):
                 bits_per_token=total / HORIZON if complete else None)
 
 
-def rollout(model, tokenizer, prompt, injection, seed, cached=True):
+def rollout(model, tokenizer, prompt, injection, seed, cached=True, chat_mode='native'):
     generator = torch.Generator(device='cpu').manual_seed(seed)
     eos = model.generation_config.eos_token_id
     eos = tokenizer.eos_token_id if eos is None else eos
     eos = {eos} if isinstance(eos, int) else set(eos or [])
-    full = chat(tokenizer, prompt)
-    a = sample_span(model, [full, chat(tokenizer, '')], eos, generator, cached)
+    full = chat(tokenizer, prompt, chat_mode=chat_mode)
+    a = sample_span(model, [full, chat(tokenizer, '', chat_mode=chat_mode)], eos, generator, cached)
     a_complete = a['content_token_count'] == HORIZON
     result = dict(seed=seed, a=a, a_complete=a_complete, b=None, b_complete=False,
                   input=measure(a['entropies'], 1, a_complete))
     if a_complete:
         prefixes = []
         for span, message in ((a['token_ids'], injection), (a['token_ids'], ''), ([], injection)):
-            framing = chat(tokenizer, prompt, message)
-            if framing[:len(full)] != full:
-                raise ValueError('Chat template does not support exact token splicing')
-            prefixes.append(full + span + framing[len(full):])
+            prefixes.append(continuation_prefix(tokenizer, prompt, message, span, chat_mode))
         b = sample_span(model, prefixes, eos, generator, cached)
         result.update(b=b, b_complete=b['content_token_count'] == HORIZON)
     b_entropies = result['b']['entropies'] if result['b'] else []
@@ -160,16 +175,30 @@ def save_tables(rows, directory, metadata, expected):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--input', type=Path, default=SOURCE)
+    parser.add_argument('--experiment-config', type=Path, help='Pinned checkpoint manifest; default is the historical experiment')
+    parser.add_argument('--input', type=Path)
     parser.add_argument('--output-dir', type=Path, default=Path(__file__).parent / 'runs/sampled_rlvr_50x20')
     parser.add_argument('--rollouts', type=int, default=20)
     parser.add_argument('--limit', type=int, default=50)
     parser.add_argument('--seed', type=int, default=20261030)
     parser.add_argument('--resume', action='store_true')
     args = parser.parse_args()
+    specification = json.loads(args.experiment_config.read_text()) if args.experiment_config else None
+    checkpoints = specification['checkpoints'] if specification else CHECKPOINTS
+    chat_mode = specification.get('chat_mode', 'native') if specification else 'native'
+    if chat_mode not in ('native', 'qwen3_nonthinking'):
+        parser.error('Unknown chat mode')
+    if (not checkpoints or len({c[0] for c in checkpoints}) != len(checkpoints)
+            or any(len(c) != 3 or not isinstance(c[0], int) or c[0] < 0
+                   or len(c[2]) != 40 or any(x not in '0123456789abcdef' for x in c[2]) for c in checkpoints)):
+        parser.error('Checkpoints require unique nonnegative steps and pinned 40-character revisions')
+    if args.input is None:
+        args.input = Path(__file__).parent / specification['source'] if specification else SOURCE
     if args.rollouts < 1 or args.limit < 1:
         parser.error('Rollouts and limit must be positive')
     source = pq.read_table(args.input)
+    if args.limit > len(source):
+        parser.error('Requested question count exceeds available dataset rows')
     questions = source.to_pylist()[:args.limit]
     if not questions or any(not isinstance(r.get(k), str) for r in questions for k in ('id', 'question', 'injection')):
         parser.error('Dataset must have non-null string id, question, and injection columns')
@@ -182,7 +211,8 @@ def main():
                   config_module_sha256=hashlib.sha256(Path(__file__).with_name('experiment_config.py').read_bytes()).hexdigest(),
                   horizon=HORIZON, python=platform.python_version(),
                   packages={name: version(name) for name in ('torch', 'transformers', 'pyarrow')},
-                  checkpoints=CHECKPOINTS, rollouts=args.rollouts, questions=len(questions), seed=args.seed,
+                  checkpoints=checkpoints, rollouts=args.rollouts, questions=len(questions), seed=args.seed,
+                  experiment_specification=specification, chat_mode=chat_mode,
                   temperature=1.0, top_k=None, top_p=None, eos='allowed; stopping event included in observed diagnostics',
                   primary_means='20-content-token spans only; null for incomplete; observed means include EOS',
                   method='context-ablation entropy differences, not formal CMI',
@@ -203,12 +233,22 @@ def main():
     rows = pq.read_table(raw_path).to_pylist() if raw_path.exists() else []
     done = {(r['rlvr_step'], r['source_row'], r['rollout_index']) for r in rows}
     torch.set_num_threads(4)
-    tokenizer = AutoTokenizer.from_pretrained(CHECKPOINTS[0][1], revision=CHECKPOINTS[0][2])
-    for step, repo, revision in CHECKPOINTS:
+    tokenizer = AutoTokenizer.from_pretrained(checkpoints[0][1], revision=checkpoints[0][2])
+    for step, repo, revision in checkpoints:
         if all((step, i, j) in done for i in range(len(questions)) for j in range(args.rollouts)):
             continue
         candidate = AutoTokenizer.from_pretrained(repo, revision=revision)
-        assert candidate.get_vocab() == tokenizer.get_vocab() and candidate.chat_template == tokenizer.chat_template
+        if candidate.get_vocab() != tokenizer.get_vocab():
+            raise ValueError('Checkpoint tokenizer vocabulary mismatch')
+        if chat_mode == 'native' and candidate.chat_template != tokenizer.chat_template:
+            raise ValueError('Checkpoint chat template mismatch')
+        # For Qwen3, the base template is conditional and the trained templates
+        # force non-thinking. Verify actual tokenized contexts for every input.
+        for question in questions:
+            for prompt, injection in [(question['question'], None), ('', None),
+                                      (question['question'], question['injection']), (question['question'], '')]:
+                if chat(candidate, prompt, injection, chat_mode) != chat(tokenizer, prompt, injection, chat_mode):
+                    raise ValueError('Checkpoint prompt tokens differ')
         model = AutoModelForCausalLM.from_pretrained(repo, revision=revision,
                     dtype=torch.float16 if config['device'] == 'mps' else torch.float32).to(config['device']).eval()
         for i, question in enumerate(questions):
@@ -217,7 +257,8 @@ def main():
                     continue
                 seed = args.seed + step * 10000000 + i * 10000 + j
                 start = time.monotonic()
-                result = flatten(rollout(model, tokenizer, question['question'], question['injection'], seed), tokenizer)
+                result = flatten(rollout(model, tokenizer, question['question'], question['injection'], seed,
+                                         chat_mode=chat_mode), tokenizer)
                 rows.append({**question, **result, 'source_row': i, 'rollout_index': j, 'rlvr_step': step,
                              'model_repo': repo, 'model_revision': revision, 'dtype': str(model.dtype),
                              'elapsed_seconds': time.monotonic()-start})

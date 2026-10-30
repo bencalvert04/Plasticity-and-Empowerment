@@ -102,7 +102,12 @@ def validate_rows(rows, summaries, config, source):
 def verify(directory=RESULTS, source_path=SOURCE):
     config = json.loads((directory / 'config.json').read_text())
     equal(hashlib.sha256(source_path.read_bytes()).hexdigest(), config['source_sha256'], 'Dataset hash mismatch')
-    equal(config['checkpoints'], [list(c) for c in CHECKPOINTS], 'Unexpected checkpoints')
+    specification = config.get('experiment_specification')
+    expected = specification['checkpoints'] if specification else [list(c) for c in CHECKPOINTS]
+    equal(config['checkpoints'], expected, 'Unexpected checkpoints')
+    if specification:
+        equal(hashlib.sha256((ROOT / 'sampled_rlvr_experiment.py').read_bytes()).hexdigest(),
+              config['script_sha256'], 'Runner source changed since run started')
     tables = [pq.read_table(directory / name) for name in ('rollouts.parquet', 'question_means.parquet')]
     for table in tables:
         equal(json.loads(table.schema.metadata[b'experiment_config']), config, 'Embedded configuration mismatch')

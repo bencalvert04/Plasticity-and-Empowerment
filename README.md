@@ -1,5 +1,8 @@
 # Plasticity and Empowerment: context-ablation experiments
 
+New experiment setup: [Qwen3-0.6B at three GSM8K training stages on 200 questions](QWEN06B_EXPERIMENT.md).
+The results below describe the completed earlier 1.7B experiment.
+
 This repository studies how removing a question, a correction, or earlier output
 changes a language model's next-token entropy. The current experiment compares
 three checkpoints of a GSM8K GRPO training run. These scores measure **entropy

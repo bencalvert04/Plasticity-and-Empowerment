@@ -9,13 +9,11 @@ import pyarrow.parquet as pq
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--results-dir', type=Path, default=Path(__file__).resolve().parent / 'results/sampled_rlvr_50x20')
 root = parser.parse_args().results_dir
-steps = [0, 50, 100]
 intervals = pq.read_table(root / 'checkpoint_mean_intervals.parquet').to_pylist()
+steps = sorted({r['rlvr_step'] for r in intervals})
 comparisons = pq.read_table(root / 'checkpoint_comparisons.parquet').to_pylist()
 question_counts = {r['n_questions'] for r in intervals}
-if len(question_counts) != 1:
-    raise ValueError('Expected the same question set at every checkpoint')
-n_questions = question_counts.pop()
+n_questions = str(next(iter(question_counts))) if len(question_counts) == 1 else f'{min(question_counts)}-{max(question_counts)} paired'
 metrics = [('input_mean', 'Prompt ablation (Output A)', '#2563eb'),
            ('injection_mean', 'Correction ablation (Output B)', '#d97706'),
            ('empowerment_mean', 'Earlier-output ablation (Output B)', '#0d9488')]
@@ -39,8 +37,12 @@ for ax, (key, title, color) in zip(axes, metrics):
         ax.annotate(f'{y:.4f}', (x, y), xytext=(0, -19), textcoords='offset points',
                     ha='center', fontsize=10, color=color)
     ax.set(title=title, xlabel='GSM8K RLVR training step', xticks=steps)
-    ax.set_xlim(-12, 112)
-    ax.set_ylim(min(0, min(r['ci95_low'] for r in ci)*1.15), max(r['ci95_high'] for r in ci) * 1.15)
+    margin = (max(steps)-min(steps))*0.12
+    ax.set_xlim(min(steps)-margin, max(steps)+margin)
+    lower = min(0, min(r['ci95_low'] for r in ci))
+    upper = max(0, max(r['ci95_high'] for r in ci))
+    padding = (upper-lower)*0.15 or 0.01
+    ax.set_ylim(lower-padding if lower < 0 else 0, upper+padding)
     ax.grid(axis='y', color='#e2e8f0', linewidth=0.8)
     ax.set_axisbelow(True)
     ax.set_ylabel('Mean entropy difference (bits/token)')
