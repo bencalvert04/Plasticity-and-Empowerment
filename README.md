@@ -1,107 +1,89 @@
-# Plasticity and Empowerment: small experiments
+# Plasticity and Empowerment: context-ablation experiments
 
-We ask how a prompt, earlier output, or a correction changes a language model's
-next-token distribution. These are context-sensitivity experiments, not formal
-estimates of directed information, plasticity, or empowerment.
+This repository studies how removing a question, a correction, or earlier output
+changes a language model's next-token entropy. The current experiment compares
+three checkpoints of a GSM8K GRPO training run. These scores measure **entropy
+sensitivity to context ablation**. They do not establish plasticity, formal
+directed information, correction-following accuracy, or empowerment.
 
-## Read the code in this order
+## Latest results: October 30, 2026
 
-1. `core.py`: load Qwen, predict the next token, compare contexts, repeat.
-2. `experiments.py`: choose prompts and run the five experiments below.
-3. `explore.py`: optional embedding clusters and a simple UMAP scatter plot.
+The completed run contains **50 screened GSM8K test questions × 20 sampled
+rollouts × 3 checkpoints = 3,000 rollouts**. Each rollout attempts 20 tokens of
+Output A, inserts the question-specific correction, then attempts 20 tokens of
+Output B. Checkpoint 0 is already an SFT model, before the additional GRPO run.
 
-There is one generation loop. It samples a token from the full context, then
-appends that same token to every ablated context. Each context has an independent
-KV cache, so its prefix is processed once and later steps process only the newest
-token. Probabilities stay on the model device, and only the last position's logits
-are computed. Model loading happens only when an experiment starts.
+Means below weight each question equally after averaging its available complete
+rollouts. Units are bits per token; brackets are pointwise 95% question-bootstrap
+intervals.
 
-## What we measure
+| Context ablated | Step 0 | Step 50 | Step 100 |
+|---|---:|---:|---:|
+| Prompt, when scoring A | 1.4987 [1.4222, 1.5813] | 1.6796 [1.5885, 1.7788] | 1.6964 [1.5731, 1.8282] |
+| Correction, when scoring B | 0.3414 [0.3096, 0.3750] | 0.1232 [0.0866, 0.1630] | 0.0802 [0.0501, 0.1133] |
+| Earlier output A, when scoring B | 0.0417 [0.0236, 0.0620] | 0.0581 [0.0467, 0.0704] | 0.0753 [0.0604, 0.0902] |
 
-Every score is `[entropy reduction, Jensen–Shannon divergence]`, in bits:
+Prompt-ablation scores increase from step 0 to 100; correction-ablation scores
+decrease. The earlier-output score increases numerically, but **none of its three
+checkpoint comparisons passes the 0.05 threshold after Holm correction**. This
+is not evidence that RLVR causes loss of plasticity or increased empowerment.
 
+![Checkpoint means, intervals, and adjusted paired-test results](results/sampled_rlvr_50x20/checkpoint_means.png)
+
+Full A+B completion rates are 98.0%, 94.7%, and 97.0%. Scores are conditional on
+completion; early endings are missing values, not zeros. The questions were
+screened for long Qwen responses, and these are checkpoints from one training
+run. Uncertainty across independently trained models is not measured.
+
+**Provenance limitation:** the historical run's recorded runner hash does not
+match the source available at publication. Raw-data arithmetic and saved
+summaries verify, but exact historical code identity is unresolved. See
+[provenance](provenance/README.md).
+
+Read [findings](FINDINGS.md) for all nine comparisons, robustness checks, and
+lessons from earlier runs. [Methods](METHODS.md) defines the contexts and scores.
+
+## Reproduce the analysis without loading a model
+
+Python 3.10 or newer:
+
+```sh
+python3 -m pip install -r requirements-analysis.txt
+python3 verify_results.py
+python3 analyze_checkpoint_statistics.py
+python3 plot_checkpoint_means.py
 ```
-entropy reduction = H(baseline) - H(full)
-JS = H((baseline + full)/2) - (H(baseline) + H(full))/2
-```
 
-Entropy reduction can be negative. JS is symmetric and lies between 0 and 1.
-Two distributions can have equal entropy yet predict entirely different tokens.
+The verifier checks artifact hashes, the full rollout grid, dataset fields,
+checkpoint revisions, seeds, entropy differences, missing-value handling, and
+all question-level means/SDs/SEMs. Analysis uses 50,000 bootstrap draws and
+question-paired t-tests, with Holm correction across nine primary comparisons.
+The plot reads the regenerated interval table directly.
 
-| Score | Baseline compared with the full context |
-|---|---|
-| input | Empty user message, followed by the same output prefix |
-| history | Original question only, fixed at its first-token distribution |
-| injection | Same interrupted conversation, but empty correction content |
-| first_span | Same corrected conversation, but empty first assistant span |
+Published inputs are in [data/gsm8k50](data/gsm8k50/README.md). Raw rollouts,
+question summaries, configuration, statistics, and figures are in
+[results/sampled_rlvr_50x20](results/sampled_rlvr_50x20).
 
-The injection experiment pauses after a uniformly random 1–32 tokens and inserts a
-new user turn. All three conditions retain the same message roles and final-answer
-instruction. The original first-span token IDs are preserved exactly.
-If the first response ends before the pause, the injection is skipped.
-`--pause-max` changes the upper bound; `--seed` seeds the random selection.
-Only the first 10 continuation tokens are scored. `window_means` contains the
-arithmetic mean of each metric across those 10 tokens, and `pause` records the
-chosen interruption point. If EOS occurs within the window, means are null;
-`scored_tokens` records the available non-EOS count. Skipped/short runs are not
-zero scores and should be counted separately when aggregating trials.
-
-## Run
+## Run a new experiment
 
 ```sh
 python3 -m pip install -r requirements.txt
-python3 experiments.py prompt --prompt 'What is 12 times 15?' --plot
-python3 experiments.py position --plot
-python3 experiments.py length --plot
-python3 experiments.py gsm8k --sample 10 --trials 3 --tokens 256 > results.json
-python3 experiments.py injection --pause-max 32 --trials 5 > injection.json
 python3 -m unittest -v
+python3 sampled_rlvr_experiment.py --output-dir runs/my-run
+# Resume only this new run, with identical code and settings:
+python3 sampled_rlvr_experiment.py --output-dir runs/my-run --resume
+# Analyze a completed new run:
+python3 analyze_checkpoint_statistics.py --results-dir runs/my-run
+python3 plot_checkpoint_means.py --results-dir runs/my-run
 ```
 
-`position` averages prompt-removal scores by output position over 20 fixed prompts.
-Only positions reached by every response are plotted. `length` truncates each of
-five fixed prompts to 5, 7, ..., 49 tokens and plots mean summed prompt-removal
-scores. Both use greedy decoding. Edit the original prompt sets in `prompts.json`.
+Defaults are 50 questions, 20 rollouts each, pinned checkpoints, temperature 1,
+full-softmax sampling, and EOS enabled. `--limit 1 --rollouts 1` provides a small
+execution check, still loading all three models. Downloads and inference are
+required for a new run. The runner uses Apple MPS when available, otherwise CPU;
+its default output is gitignored under `runs/`. Do not resume the published
+historical run with the edited runner. Device and library differences can change
+sampled trajectories.
 
-`gsm8k` randomly samples distinct questions from the combined official train and
-test splits. Only questions go to the model. `prompt`, `gsm8k`, and `injection`
-sample the full softmax at temperature 1. Change correction examples in
-`injection_cases.example.json`. Reference answers are not used for grading.
-
-All runs use Qwen2.5-0.5B-Instruct, Apple MPS when available, otherwise CPU.
-The first run downloads the model. `--seed` defaults to 42; this does not promise
-bit-for-bit reproducibility across devices. `--tokens` defaults to 125 and caps
-non-injection generation. Injection always uses a 10-token continuation window.
-Start with `--tokens 8` for a quick non-injection execution check.
-
-JSON output contains settings, text, exact generated token IDs, completion status,
-per-token scores (including EOS), and numerical-answer means. A capped response
-has `complete: false`; its answer means are null. Only a completed response ending
-with `Final answer: 720` (signed integers or decimals) is recognized. Unexpected
-formats and unstable decoded token boundaries produce no answer score. Answer
-means include tokens overlapping the number, excluding explanation and EOS.
-Scores are computed before sampling the corresponding token.
-
-## Optional question coverage
-
-```sh
-python3 -m pip install -r requirements-visualization.txt
-python3 explore.py
-```
-
-This embeds GSM8K questions with MiniLM, runs 50-cluster KMeans, selects the nearest
-member to each center, and saves `representatives.json` and `clusters.png`.
-UMAP is only a distorted 2D view. Cluster representatives are not an unbiased
-sample or a measure of mathematical difficulty.
-
-## Deliberate simplifications
-
-The old script names and APIs are replaced by the commands above. Optional scoring
-flags, unlimited generation, flexible answer extraction, HTML
-hover controls, and multi-file result directories are removed. Generated maps
-and dataset copies are no longer tracked. Both metrics are always calculated;
-use JSON arrays for totals or other summaries. No correctness grader is included.
-
-Context ablations have different lengths and are not marginalization over possible
-histories. Prompt length can also change output length, so summed scores mix both
-effects. A downward curve does not prove convergence to zero.
+There is one supported inference entry point: `sampled_rlvr_experiment.py`.
+[Cleanup notes](CLEANUP.md) explain which older scripts were retired and why.

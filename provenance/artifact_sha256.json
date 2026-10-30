@@ -1,0 +1,14 @@
+{
+  "results/earlier_diagnostics/answer_pilot.json": "757f0830315bd4573fa1a2ed9df564d37516765f82de454f0180875d01e61d47",
+  "results/earlier_diagnostics/directed_information.parquet": "aedd88c83c269db66300d9f84da6e58b92a0391c4bce23a9c103f3a8ddde9dab",
+  "results/earlier_diagnostics/directed_information_summary.json": "70012a3d2db3b2136a27c5ef78594ecaa1543762a4f97e4d18f8eba6e2e8bbef",
+  "results/sampled_rlvr_50x20/config.json": "71ebe70b40795962df78c7eedd2cbb6a30b05cd9d2dfbb34e00c23ed86942b3f",
+  "results/sampled_rlvr_50x20/question_means.parquet": "7947db56e3054e438d1708c5af5ad450924cf42e484c79149b0f6bc2cdc32974",
+  "results/sampled_rlvr_50x20/rollouts.parquet": "34a27efe77b8f250bcd4829d9cea2d27c4d8849c15f2a92ba73f8067c22e75b5",
+  "data/gsm8k50/cases.json": "34e1139e8ef77aa40dc78ccfa7b9a9d633d7bd354a6224a72b76b9d28401357c",
+  "data/gsm8k50/gsm8k50_injections.parquet": "571d941e89f43bfa3e62c2bf7f2dacea60501bdf02086ef5406acb8b4d81e9eb",
+  "data/gsm8k50/review.md": "48dc9fb7fbf343a55115da35b0835abcfd846f37b7e35650bc10aae3e54afd1e",
+  "data/gsm8k50/screening.jsonl": "dea1f1b687050561ef4a7afa9b37f35aff8cbfc55bc61f5b33a7bc94959aa8f8",
+  "data/gsm8k50/selected.json": "9a015f80f50fc479716bf2854a74f014a2ed2463c1a0bba86aab02f087d05fce",
+  "provenance/sampled_runner_snapshot.py.txt": "35673141760033744a66a565124403d77ee8ded2c1e8a5c6bf187323d262e5e6"
+}

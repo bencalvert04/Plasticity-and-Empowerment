@@ -1,0 +1,432 @@
+{
+  "note": "Exploratory robustness checks, not independent replications. Each analysis adjusts its own nine tests; no correction across analyses.",
+  "completion_counts": {
+    "0": {
+      "complete": 980,
+      "a_early_eos": 14,
+      "b_early_eos": 6
+    },
+    "50": {
+      "complete": 947,
+      "a_early_eos": 20,
+      "b_early_eos": 33
+    },
+    "100": {
+      "complete": 970,
+      "b_early_eos": 29,
+      "a_early_eos": 1
+    }
+  },
+  "joint_complete": {
+    "means": [
+      {
+        "metric": "input",
+        "rlvr_step": 0,
+        "n_questions": 50,
+        "mean": 1.4969286883745088,
+        "ci95_low": 1.4204020593835298,
+        "ci95_high": 1.579825685078843
+      },
+      {
+        "metric": "input",
+        "rlvr_step": 50,
+        "n_questions": 50,
+        "mean": 1.6809987198431608,
+        "ci95_low": 1.5885172546933115,
+        "ci95_high": 1.7809746435824638
+      },
+      {
+        "metric": "input",
+        "rlvr_step": 100,
+        "n_questions": 50,
+        "mean": 1.6975679278455555,
+        "ci95_low": 1.5740175943905086,
+        "ci95_high": 1.829228944906998
+      },
+      {
+        "metric": "injection",
+        "rlvr_step": 0,
+        "n_questions": 50,
+        "mean": 0.34142627437341266,
+        "ci95_low": 0.30964274137896863,
+        "ci95_high": 0.37502069083605133
+      },
+      {
+        "metric": "injection",
+        "rlvr_step": 50,
+        "n_questions": 50,
+        "mean": 0.12321552557375509,
+        "ci95_low": 0.08659148874974126,
+        "ci95_high": 0.1630353714464012
+      },
+      {
+        "metric": "injection",
+        "rlvr_step": 100,
+        "n_questions": 50,
+        "mean": 0.08017948184720121,
+        "ci95_low": 0.05014064595128122,
+        "ci95_high": 0.11331473978278166
+      },
+      {
+        "metric": "empowerment",
+        "rlvr_step": 0,
+        "n_questions": 50,
+        "mean": 0.041721327628632426,
+        "ci95_low": 0.023572871938163636,
+        "ci95_high": 0.06196335342454294
+      },
+      {
+        "metric": "empowerment",
+        "rlvr_step": 50,
+        "n_questions": 50,
+        "mean": 0.05807519168899353,
+        "ci95_low": 0.0467005163725579,
+        "ci95_high": 0.07042875134191272
+      },
+      {
+        "metric": "empowerment",
+        "rlvr_step": 100,
+        "n_questions": 50,
+        "mean": 0.07526127829190805,
+        "ci95_low": 0.06042481326656837,
+        "ci95_high": 0.09017569708394
+      }
+    ],
+    "comparisons": [
+      {
+        "metric": "input",
+        "step_from": 0,
+        "step_to": 50,
+        "n_pairs": 50,
+        "mean_difference": 0.1840700314686522,
+        "ci95_low": 0.10944417356046385,
+        "ci95_high": 0.2617709010915612,
+        "t_statistic": 4.680033835887582,
+        "df": 49,
+        "p_raw": 2.295631791182512e-05,
+        "p_holm": 0.00016069422538277583,
+        "significant_005": true
+      },
+      {
+        "metric": "input",
+        "step_from": 0,
+        "step_to": 100,
+        "n_pairs": 50,
+        "mean_difference": 0.2006392394710471,
+        "ci95_low": 0.09649105292602422,
+        "ci95_high": 0.30895024503346097,
+        "t_statistic": 3.686096264099497,
+        "df": 49,
+        "p_raw": 0.0005694994496074227,
+        "p_holm": 0.003416996697644536,
+        "significant_005": true
+      },
+      {
+        "metric": "input",
+        "step_from": 50,
+        "step_to": 100,
+        "n_pairs": 50,
+        "mean_difference": 0.01656920800239492,
+        "ci95_low": -0.04578581662597773,
+        "ci95_high": 0.08052809168152582,
+        "t_statistic": 0.5114267059325901,
+        "df": 49,
+        "p_raw": 0.6113493337998199,
+        "p_holm": 0.6113493337998199,
+        "significant_005": false
+      },
+      {
+        "metric": "injection",
+        "step_from": 0,
+        "step_to": 50,
+        "n_pairs": 50,
+        "mean_difference": -0.21821074879965757,
+        "ci95_low": -0.24858273662894526,
+        "ci95_high": -0.18843681270396304,
+        "t_statistic": -14.168670374415193,
+        "df": 49,
+        "p_raw": 5.900151121332385e-19,
+        "p_holm": 4.720120897065908e-18,
+        "significant_005": true
+      },
+      {
+        "metric": "injection",
+        "step_from": 0,
+        "step_to": 100,
+        "n_pairs": 50,
+        "mean_difference": -0.2612467925262114,
+        "ci95_low": -0.2896159885054608,
+        "ci95_high": -0.23341556399955488,
+        "t_statistic": -17.905982238123567,
+        "df": 49,
+        "p_raw": 3.836104539089199e-23,
+        "p_holm": 3.4524940851802794e-22,
+        "significant_005": true
+      },
+      {
+        "metric": "injection",
+        "step_from": 50,
+        "step_to": 100,
+        "n_pairs": 50,
+        "mean_difference": -0.043036043726553876,
+        "ci95_low": -0.06870091292324144,
+        "ci95_high": -0.016491281032092436,
+        "t_statistic": -3.2017382982048117,
+        "df": 49,
+        "p_raw": 0.0024000463965333373,
+        "p_holm": 0.012000231982666686,
+        "significant_005": true
+      },
+      {
+        "metric": "empowerment",
+        "step_from": 0,
+        "step_to": 50,
+        "n_pairs": 50,
+        "mean_difference": 0.0163538640603611,
+        "ci95_low": -0.006327509269059163,
+        "ci95_high": 0.03838898173814381,
+        "t_statistic": 1.4138226086405206,
+        "df": 49,
+        "p_raw": 0.1637362047046326,
+        "p_holm": 0.3274724094092652,
+        "significant_005": false
+      },
+      {
+        "metric": "empowerment",
+        "step_from": 0,
+        "step_to": 100,
+        "n_pairs": 50,
+        "mean_difference": 0.03353995066327562,
+        "ci95_low": 0.008342434304331028,
+        "ci95_high": 0.05889912467968648,
+        "t_statistic": 2.5619141191092942,
+        "df": 49,
+        "p_raw": 0.013536181384401874,
+        "p_holm": 0.0541447255376075,
+        "significant_005": false
+      },
+      {
+        "metric": "empowerment",
+        "step_from": 50,
+        "step_to": 100,
+        "n_pairs": 50,
+        "mean_difference": 0.017186086602914527,
+        "ci95_low": -0.0020421417436235264,
+        "ci95_high": 0.03565379937098933,
+        "t_statistic": 1.7696208829473208,
+        "df": 49,
+        "p_raw": 0.08301291385451247,
+        "p_holm": 0.2490387415635374,
+        "significant_005": false
+      }
+    ]
+  },
+  "excluding_source_issues": {
+    "excluded_ids": [
+      "test:1309",
+      "test:255"
+    ],
+    "means": [
+      {
+        "metric": "input",
+        "rlvr_step": 0,
+        "n_questions": 48,
+        "mean": 1.4955336808045885,
+        "ci95_low": 1.415286688615855,
+        "ci95_high": 1.580987762819663
+      },
+      {
+        "metric": "input",
+        "rlvr_step": 50,
+        "n_questions": 48,
+        "mean": 1.6916569116194973,
+        "ci95_low": 1.5984460699472487,
+        "ci95_high": 1.7920816794840744
+      },
+      {
+        "metric": "input",
+        "rlvr_step": 100,
+        "n_questions": 48,
+        "mean": 1.7187895677012686,
+        "ci95_low": 1.5935877588970153,
+        "ci95_high": 1.8516368884740495
+      },
+      {
+        "metric": "injection",
+        "rlvr_step": 0,
+        "n_questions": 48,
+        "mean": 0.340249020684285,
+        "ci95_low": 0.307084681016622,
+        "ci95_high": 0.37460682685991353
+      },
+      {
+        "metric": "injection",
+        "rlvr_step": 50,
+        "n_questions": 48,
+        "mean": 0.12363475932381966,
+        "ci95_low": 0.08546805535507691,
+        "ci95_high": 0.16425977653339954
+      },
+      {
+        "metric": "injection",
+        "rlvr_step": 100,
+        "n_questions": 48,
+        "mean": 0.0794964380627557,
+        "ci95_low": 0.048732496064188426,
+        "ci95_high": 0.11357616146201727
+      },
+      {
+        "metric": "empowerment",
+        "rlvr_step": 0,
+        "n_questions": 48,
+        "mean": 0.04186250747347064,
+        "ci95_low": 0.022950957346623158,
+        "ci95_high": 0.062464273412236024
+      },
+      {
+        "metric": "empowerment",
+        "rlvr_step": 50,
+        "n_questions": 48,
+        "mean": 0.05810572921716597,
+        "ci95_low": 0.046279462902122134,
+        "ci95_high": 0.07097534539431292
+      },
+      {
+        "metric": "empowerment",
+        "rlvr_step": 100,
+        "n_questions": 48,
+        "mean": 0.07394779860726665,
+        "ci95_low": 0.05892220379085016,
+        "ci95_high": 0.08874593637811605
+      }
+    ],
+    "comparisons": [
+      {
+        "metric": "input",
+        "step_from": 0,
+        "step_to": 50,
+        "n_pairs": 48,
+        "mean_difference": 0.19612323081490857,
+        "ci95_low": 0.12354045849524957,
+        "ci95_high": 0.27149481258830116,
+        "t_statistic": 5.141716499281323,
+        "df": 47,
+        "p_raw": 5.201366682537169e-06,
+        "p_holm": 3.640956677776018e-05,
+        "significant_005": true
+      },
+      {
+        "metric": "input",
+        "step_from": 0,
+        "step_to": 100,
+        "n_pairs": 48,
+        "mean_difference": 0.22325588689668,
+        "ci95_low": 0.1221426902394293,
+        "ci95_high": 0.32856527439608174,
+        "t_statistic": 4.169702321756219,
+        "df": 47,
+        "p_raw": 0.00013004865664096752,
+        "p_holm": 0.0007802919398458051,
+        "significant_005": true
+      },
+      {
+        "metric": "input",
+        "step_from": 50,
+        "step_to": 100,
+        "n_pairs": 48,
+        "mean_difference": 0.027132656081771466,
+        "ci95_low": -0.034858083083226236,
+        "ci95_high": 0.09223837601928318,
+        "t_statistic": 0.8284131014653092,
+        "df": 47,
+        "p_raw": 0.4116237120456333,
+        "p_holm": 0.4116237120456333,
+        "significant_005": false
+      },
+      {
+        "metric": "injection",
+        "step_from": 0,
+        "step_to": 50,
+        "n_pairs": 48,
+        "mean_difference": -0.21661426136046527,
+        "ci95_low": -0.24813073255658635,
+        "ci95_high": -0.18593536032836805,
+        "t_statistic": -13.535625652884725,
+        "df": 47,
+        "p_raw": 7.855306642735915e-18,
+        "p_holm": 6.284245314188732e-17,
+        "significant_005": true
+      },
+      {
+        "metric": "injection",
+        "step_from": 0,
+        "step_to": 100,
+        "n_pairs": 48,
+        "mean_difference": -0.2607525826215293,
+        "ci95_low": -0.29039252958211503,
+        "ci95_high": -0.23151172393419117,
+        "t_statistic": -17.240551096371284,
+        "df": 47,
+        "p_raw": 5.91870689483461e-22,
+        "p_holm": 5.326836205351149e-21,
+        "significant_005": true
+      },
+      {
+        "metric": "injection",
+        "step_from": 50,
+        "step_to": 100,
+        "n_pairs": 48,
+        "mean_difference": -0.04413832126106395,
+        "ci95_low": -0.07059110827700386,
+        "ci95_high": -0.016291634076236527,
+        "t_statistic": -3.1671918447946474,
+        "df": 47,
+        "p_raw": 0.002703542127754385,
+        "p_holm": 0.013517710638771925,
+        "significant_005": true
+      },
+      {
+        "metric": "empowerment",
+        "step_from": 0,
+        "step_to": 50,
+        "n_pairs": 48,
+        "mean_difference": 0.016243221743695326,
+        "ci95_low": -0.007405366971998384,
+        "ci95_high": 0.03962337367959318,
+        "t_statistic": 1.3487966062136854,
+        "df": 47,
+        "p_raw": 0.18386553487018567,
+        "p_holm": 0.36773106974037134,
+        "significant_005": false
+      },
+      {
+        "metric": "empowerment",
+        "step_from": 0,
+        "step_to": 100,
+        "n_pairs": 48,
+        "mean_difference": 0.03208529113379601,
+        "ci95_low": 0.006570408814170764,
+        "ci95_high": 0.05722226631319511,
+        "t_statistic": 2.455538546353355,
+        "df": 47,
+        "p_raw": 0.017820949759715137,
+        "p_holm": 0.07128379903886055,
+        "significant_005": false
+      },
+      {
+        "metric": "empowerment",
+        "step_from": 50,
+        "step_to": 100,
+        "n_pairs": 48,
+        "mean_difference": 0.015842069390100688,
+        "ci95_low": -0.0032398371317824562,
+        "ci95_high": 0.03391543465165703,
+        "t_statistic": 1.6620839774373026,
+        "df": 47,
+        "p_raw": 0.10315233635133153,
+        "p_holm": 0.3094570090539946,
+        "significant_005": false
+      }
+    ]
+  }
+}
