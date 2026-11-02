@@ -1,0 +1,590 @@
+step,id,trial,b_text,selected_text,eligible_token_count,plasticity,empowerment
+0,test:501,3,"Mariah and her grandma used:
+
+$$
+\frac{1}{4} + \frac{1}{2} = \frac{1}{4} + \frac{2}{4} = \frac{3}{4}
+$$
+
+","$$
+\frac{1}{4} + \frac{1}{",42,-0.027678936326325735,-0.01887853592021808
+0,test:501,6,"- Mariah used $ \frac{1}{4} $ of a skein: $ \frac{1}{4} \times 364 = 91 $ yards.
+
+- Her grandma used $ \frac{1}{2", $ \frac{1}{4} \times 364 =,19,0.019664601683810665,-0.0172462926847705
+0,test:209,3,"If half a dozen plates cost $6000, then the total cost of 20 dozen cups is:
+
+$$
+20 \times 6000 = 120,000 \text{ dollars}
+$$","$$
+20 \times 6000 = 12",21,0.04935161064689358,0.019944197575872142
+0,test:209,8,"Let’s calculate:
+
+- **Cost of 20 dozen cups:**
+  $$
+  20 \times 12 = 240 \text{ cups}
+  $$
+
+- **Total cost of 20 dozen cups"," $$
+  20 \times 12 = 24",18,-0.014588153385557235,0.0008946708558748166
+0,test:209,9,"Each **plate costs $6400**.
+
+**Total cost of 20 dozen plates**:
+$$
+20 \times 6400 = 128000
+$$
+
+The problem says that 2","$$
+20 \times 6400 = 12",21,0.023957829870050774,0.08685591799439862
+0,test:1116,1,"This year, there was a **40% increase** in enrollment, so the number of students is:
+
+$$
+50 \times 1.40 = 70
+$$
+
+**Answer: 70 students**.","$$
+50 \times 1.40 = 70",17,0.05737027740512227,0.03482685946419224
+0,test:1116,2,"This year, the number of students enrolled in the calligraphy class is:
+
+$$
+50 \times (1 + 0.40) = 50 \times 1.40 = 70
+$$
+
+**Answer","$$
+50 \times (1 + 0.40)",32,0.02576428878286,0.11576158955843614
+0,test:1116,4,"This year, the enrollment increased by 40%.
+
+Starting with 50 students last year:
+
+$$
+50 \times 1.40 = 70
+$$
+
+**Answer: 70 students are enrolled this year.","$$
+50 \times 1.40 = 70",17,0.030644281830882393,0.013475586217252082
+0,test:1116,5,"This year, there was a **40% increase** in enrollment.
+
+To find the new number of students:
+
+$$
+50 \times 1.40 = 70
+$$
+
+**So, there are 70 students","$$
+50 \times 1.40 = 70",17,0.02709884183518625,0.04954040087012193
+0,test:1116,7,"This year, there were 40% more students enrolled in the calligraphy class.  
+This means the new enrollment is:  
+50 students × (1 + 40%) = 50 × 1.4 = 7",1 + 4050 × 1.4 = 7,15,0.014303421878139488,0.014133092142098272
+0,test:1116,9,"This year, there was a **40% increase** in enrollment, so we calculate:
+
+$$
+50 \times (1 + 0.40) = 50 \times 1.40 = 70
+",1 + 0.4050 \times 1.4,20,0.006980003675562329,-0.006191472767386586
+0,test:178,7,"Bo has 50 crabs.
+
+Monic has **4 fewer** → $ 50 - 4 = 46 $.
+
+Rani has **10 more** → $ 46 + 10 = 56", $ 50 - 4 = 46 $46 +,22,0.009541392878236365,-0.004358806709569762
+0,test:864,6,"The total number of burritos ordered is 700.
+
+- **Each student is given 10 burritos**:  
+  $ 50 \times 10 = 500 $ burritos.
+
+- **Mr. George", $ 50 \times 10 = 500 $,15,0.03483123735974611,-0.014589609478328687
+0,test:864,9,"**Total burritos ordered**: 600  
+**Students at the picnic**: 50  
+**Each student gets 10 burritos**:  
+$$ 50 \times 10 = 500 $$
+
+**Mr",$$ 50 \times 10 = 500 $$,15,0.03387325996803459,0.004693700992356753
+0,test:61,3,"The total amount Janet paid is:
+
+$$
+500 + 800 + (10\% \times 1600) = 500 + 800 + 160 = 14",500 + 800500 + 80,25,-0.06525136506567909,0.059063582983427905
+0,test:61,4,"After paying $500 for the material and $800 for constructing the brooch, Janet pays:
+
+$$
+500 + 800 = 1300
+$$
+
+Then, she pays **10%","$$
+500 + 800 = 130",18,-0.024921948364086195,0.006066063076703662
+0,test:447,5,"Joey starts with **214 points**, scores **36** points, and scores **10** points.  
+
+So, Joey's final score is:
+
+$$
+214 + 36 = 250
+$$","$$
+214 + 36 = 250
+",16,0.10937500246460938,0.06662914132163375
+0,test:476,0,"Each book costs **$15**, so the number of books Sarah bought is:
+
+$$
+\frac{360}{15} = 24
+$$
+
+**Therefore, each child got 24 books.**","$$
+\frac{360}{15} = 2",18,-0.04810592368933916,-0.04650660408830542
+0,test:476,1,"If Sarah spent $360 on books and each book costs $15, then the number of books she bought is:  
+$$
+\frac{360}{15} = 24
+$$
+
+So, **each","$$
+\frac{360}{15} = 2",18,0.1593372398718202,0.05148011052466851
+0,test:476,2,"Sarah spent $360 on books. Each book costs $15, so the number of books Sarah bought is:
+
+$$
+\frac{360}{15} = 24
+$$
+
+Each child got **24","$$
+\frac{360}{15} = 2",18,0.07883782343148292,0.006488318631939668
+0,test:476,5,"If Sarah spent **$360** and each book costs **$15**, then the number of books is:
+
+$$
+\frac{360}{15} = 24
+$$
+
+Each child got **24","$$
+\frac{360}{15} = 2",18,0.1071017528042527,0.010940220132397371
+0,test:476,7,"Sarah spent $360 on books, and each book is $15.  
+Divide the total spent by the price per book:  
+$$
+\frac{360}{15} = 24
+$$
+
+Therefore","$$
+\frac{360}{15} = 2",18,0.08198076251816626,0.005148664651884852
+0,test:1034,0,"He buys **3 books** at \$20 each, costing:
+
+$$
+3 \times 20 = 60
+$$
+
+He also buys **3 pencils**, each costing \$6, costing:
+
+$$
+3 \times 6","$$
+3 \times 20 = 60
+$$3",19,0.11232477224378574,-0.008084357866391657
+0,test:1034,4,"He buys 3 books: $3 \times 20 = 60$ dollars  
+He buys 3 pencils: $3 \times 6 = 18$ dollars  
+
+His total spending is:  
+**$60 +", $3 \times 20 = 60$ $3 \,23,-0.08386138871962127,-0.03824643869544767
+0,test:1034,5,"He ends up spending:  
+**$ 3 \times 16 + 3 \times 6 = 48 + 18 = 66 $**
+
+**Total amount spent: $66**.",$ 3 \times 16 + 3 \times 6,28,-0.05019272010952894,0.20888803956428698
+0,test:1034,9,"Ted starts with $200.
+
+He buys:
+- 3 books for $20 each ⇒ $3 × $20 = $60  
+- 3 pencils for $6 each ⇒ $3 × $6 = $18", $3 × $20 = $60 $3 × $6,19,0.06054714489302266,0.00789253090085443
+0,test:1232,0,"Eve originally had **28 pomelos**, and she was left with **1/4** of that, which equals:
+
+$$
+\frac{1}{4} \times 28 = 7
+$$
+
+So, Eve","$$
+\frac{1}{4} \times 28 =",19,0.0946865226183339,-0.0032533806130231823
+0,test:1232,2,"Eve had **28** pomelos.
+
+She is left with **1/4** of the original 28, which is:
+
+$$
+\frac{1}{4} \times 28 = 7
+$$
+
+","$$
+\frac{1}{4} \times 28 =",19,0.050662811783937896,-0.003625153866353988
+0,test:1232,6,"Eve had **20** pomelos.
+
+She is left with **1/4** of the original amount, so she gave away:
+$$
+\frac{1}{4} \times 20 = 5
+$$
+
+","$$
+\frac{1}{4} \times 20 =",19,-0.022549184762950366,-0.011886142870450082
+0,test:54,1,"The two house cats had **12** and **3 × 12 = 36** kittens, so the total number of kittens is:
+
+**12 + 36 = 48**
+
+$\boxed{48}$",3 × 12 = 3612 + 36,19,-0.02360903832789821,-0.010475739343867948
+0,test:54,5,"The Doubtfire family has 12 kittens from Trixie and 3 × 12 = 36 kittens from Patchy.  
+Total number of kittens = 12 + 36 = **48** kittens.",3 × 12 = 3612 + 36,15,-0.03575977763781945,-0.054603159156007074
+0,test:407,1,"Let’s solve the problem step by step:
+
+1. **Elliott walked half the total steps to and from school:**
+   $$
+   \frac{10,000}{2} = 5,000 \"," \frac{10,000}{2} = 5",19,-0.027906875542559342,0.02175230632002846
+0,test:407,2,"Let’s solve the problem:
+
+- **Half of all steps** were taken on walks to and from school:  
+  $ \frac{1}{2} \times 10000 = 5000 $ steps  
+-", $ \frac{1}{2} \times 1000,23,-0.04376123680073458,-0.08172015989742552
+0,test:407,3,"Let’s solve the problem using the corrected numbers:
+
+- Elliott **walked half** of his 10,000 steps total.
+- That means he walked $ \frac{10,000}{2} = 5"," \frac{10,000}{2} = 5",15,-0.004355792016974646,-0.006736236262797016
+0,test:859,8,"Let's solve the problem step by step:
+
+- Since **40 customers** each tipped **$20**, the total amount of tips is:
+
+$$
+40 \times 20 = 800
+$$
+
+Julieta","$$
+40 \times 20 = 800
+",16,0.016443186351655942,0.011267233477459134
+0,test:451,8,"After a price increase of $30 per balloon, the cost to fill 170 balloons would be:
+
+$$
+170 \times 30 = 5100
+$$
+
+Bentley paid **$51","$$
+170 \times 30 = 510",18,0.09043321411233289,-0.014412797022669111
+0,test:919,4,"Each student bought 20 lollipops, costing $0.5 each, so the cost to each student is:
+
+$$
+20 \times 0.5 = 10 \text{ dollars}.
+$$
+
+Each student sold","$$
+20 \times 0.5 = 10$$",15,0.04240962767895932,0.01782136420273067
+0,test:1206,3,"John’s house is worth **$300,000**.
+
+He gets a loan worth **40%** of that:  
+$300,000 × 40% = **$120,","$300,000 × 40% = **",16,-0.016432103109044267,-0.02005400223382215
+0,test:1206,4,"John's house is worth $300,000. He gets a loan of 40% of that, which is:
+
+$$ 0.40 \times 300,000 = 120","0.40 \times 300,000 =",19,0.0020591489557015546,-0.0028889255959597903
+0,test:569,4,"Mitchell made **25** lemonades this weekend.  
+Each lemonade is sold for **$4**, so Mitchell made:
+
+$$
+25 \times 4 = 100 \ \text{dollars}
+$$
+
+L","$$
+25 \times 4 = 100 \$$",15,0.0378005327134512,0.011860608423497373
+0,test:569,9,"Mitchell sold **25 lemonades**, and each lemonade costs **$4**, so:
+
+$$
+25 \times 4 = 100
+$$
+
+Mitchell made **$100**.
+
+Liam made **","$$
+25 \times 4 = 100
+$$",15,0.02134009528948203,-0.022165945959689754
+0,test:865,5,"The total number of cars in the rink is 85.
+
+- Red cars: 12  
+- Green cars: 12 - 2 = 10  
+- Blue cars: 3 × 10 = 3",12 - 2 = 103 × 10 =,17,-0.015991388532226362,-0.03521152626429588
+0,test:865,6,"Let's solve the problem step by step:
+
+- Red cars = 12  
+- Green cars = 12 - 2 = 10  
+- Blue cars = $ 10 \times 3 = 30 $  
+",12 - 2 = 10 $ 10 \times,22,-0.008557205080675583,0.049663142912686455
+0,test:696,0,"Adam has collected **50 points**.  
+Betty collected **30%** more than Adam, so:  
+$$ 50 + 0.30 \times 50 = 50 + 15 = ",50 + 0.30 \times 50 = ,17,0.010089624835381983,0.014021428884249568
+0,test:696,1,"Adam has **50 points**, Betty has **$ 50 \times 1.3 = 65 $** points (30% more), Marta has **$ 3 \times 65 = 195",$ 50 \times 1.3 = 65 $,26,0.009982247707860855,0.03133826244447846
+0,test:696,7,"Adam has **50 points**.  
+Betty was **30% more** than Adam, so she has:  
+$$ 50 + (0.30 \times 50) = 50 + 15",0.30 \times 5050 + 15,15,-0.008633188190772974,0.0018676198640605434
+0,test:696,9,"Adam has 50 points.
+
+Betty has **30% more** than Adam → $50 \times 1.30 = 65$ points.
+
+Marta has collected **3 times** more than Tom, and **", $50 \times 1.30 = 65$,15,0.00020725132417283022,-0.006846224557618067
+0,test:1291,0,"George has **24 pens**.
+
+Since Timothy has **3 times** the number of pens that George has:
+
+$$
+\text{Timothy} = 3 \times 24 = 72
+$$
+
+Now, Sarah has","$$
+ = 3 \times 24 = 72
+",16,0.10035185612177884,0.017270297560753534
+0,test:1291,1,"If George has 24 pens, and Timothy has **3 times** as many as George, then:
+
+$$
+\text{Timothy's pens} = 3 \times 24 = 72
+$$
+
+Sarah has **","$$
+ = 3 \times 24 = 72
+",16,0.03700630573512172,-0.014529306308880526
+0,test:1291,2,"If George has **24 pens**, and Timothy has **3 times** that, then:
+
+$$
+\text{Timothy's pens} = 3 \times 24 = 72
+$$
+
+Now, Sarah has **half","$$
+ = 3 \times 24 = 72
+",16,0.11459594863930155,-0.004442180663560672
+0,test:1291,3,"If George has 24 pens, and Timothy has **3 times** as many as George, then:
+
+$$
+\text{Timothy's pens} = 3 \times 24 = 72
+$$
+
+Now, Sarah","$$
+ = 3 \times 24 = 72
+",16,0.03594679510000181,-0.014589846640471174
+0,test:318,0,"A classroom has **40 boys**.
+
+Let's find the total number of children:
+
+- The number of **nongendered children** is $ \frac{1}{10} \times 40 = 4 $.
+-", $ \frac{1}{10} \times 40 =,18,0.008040861827127325,-0.03842006193687363
+0,test:318,2,"If there are **40 boys**, and the classroom has **3 times as many girls as boys**, then:
+
+$$
+\text{Number of girls} = 3 \times 40 = 120
+$$
+
+$$
+","$$
+ = 3 \times 40 = 120",17,0.034916385049533954,-0.03298055391248151
+0,test:318,8,"Since there are **40 boys** in the classroom:
+
+- The number of **nongendered children** is $ \frac{1}{10} \times 40 = 4 $.
+- The number of **girls**", $ \frac{1}{10} \times 40 =,18,0.06210372734737272,-0.023640548368954722
+0,test:689,6,"Manolo bought 5 lollipops at $0.40 each, so the cost of the lollipops is:
+
+$$
+5 \times 0.40 = 2.00
+$$
+
+He also bought","$$
+5 \times 0.40 = 2.0",18,-0.001293736388349013,-0.0001528353727432356
+0,test:1311,2,"Right now, there are **250 feet** of dock. He needs:
+$$
+3 \text{ feet per foot of dock} \times 250 = 750 \text{ feet of line}
+$$
+
+**","$$
+3 \times 250 = 750$$",15,-0.0028481671326214078,0.004320124935778343
+0,test:1311,3,"He needs to buy:  
+$$ 200 \text{ feet of dock} \times 3 \text{ feet of line per foot} = 600 \text{ feet of line} $$
+
+So, the total number",$$ 200 \times 3 = 600 $$,15,-0.07098345634700914,-0.04290977654909511
+0,test:1311,4,"If there are **250 feet** of dock and **3 feet** of line needed per foot:
+
+$$
+250 \times 3 = 750
+$$
+
+**Total line needed: 750 feet**","$$
+250 \times 3 = 750
+",16,-0.032682874848554394,0.033469540283673875
+0,test:1311,5,"He needs to buy $ 3 \times 250 = 750 $ feet of line in total.  
+
+**Answer: 750 feet**.", $ 3 \times 250 = 750 $,15,-0.04832309888449041,0.10503784802297862
+0,test:189,6,"They spent $20.25 on 3 tickets.
+
+- **Spent on tickets**: $20.25  
+- **Spent on food**: $20.25 - $4.50 = $15", $20.25 - $4.50 = $1,16,0.014616034568583321,0.03224594693644273
+0,test:189,9,"The three friends spend:
+
+- **$20.25** on tickets  
+- **$4.50 less** on food than on tickets → $20.25 - $4.50 = **$15.", $20.25 - $4.50 = **$,15,0.009256073095487712,-0.0066846264616098475
+0,test:735,0,"There were **200 voters** in total.
+
+- Candidate A got **20%** of them:  
+  $ 20\% \times 200 = 40 $ votes.
+
+- Candidate B got **5", $ 20\% \times 200 = 4,17,0.019767811370062796,-0.022020999640517402
+0,test:735,2,"Candidate A got 20% of 200 voters = $0.20 \times 200 = 40$ votes.
+
+Candidate B got 50% more than candidate A's votes.  
+So, $", $0.20 \times 200 = 40,16,0.009043440536333946,-0.014433826090377503
+0,test:735,5,"If there are **200 voters**, and **20%** of them voted for candidate A:
+
+- Candidate A got $ 20\% \times 200 = 40 $ votes.
+- Candidate B got **", $ 20\% \times 200 = 4,17,0.04140825267847201,-0.023042698893065486
+0,test:735,6,"If there were **200 voters**, and **20%** of them voted for Candidate A, then:
+
+- A got $ 20\% \times 200 = 40 $ votes.
+
+Candidate B got **", $ 20\% \times 200 = 4,17,0.03986479166924255,-0.02241047793213511
+0,test:735,9,"Candidate A got 20% of the 200 voters, which is:
+
+$$ 0.20 \times 200 = 40 $$
+
+Candidate B got **50% more** than Candidate A, so",$$ 0.20 \times 200 = 4,17,0.030079714640548143,0.015320731062214083
+0,test:704,1,"Gerald and Julia divided $100 in the ratio 3:2.
+
+- Total parts = 3 + 2 = 5 shares.
+- Each share is $100 / 5 = $20.
+
+Gerald spent",3 + 2 = 5 $100 / 5 =,18,0.017400820507706763,-0.03880893297488607
+0,test:704,3,"Gerald spent $15 on a book.
+
+He originally had $100, and since he spent $15, he had:
+
+$$
+100 - 15 = 85
+$$
+
+**Answer:** Gerald had","$$
+100 - 15 = 85
+$$",15,0.009767137827778546,0.005362504713533175
+0,test:704,6,"Gerald and Julia divided $100 in the ratio 3:2.  
+
+If Gerald spent $15 on a book, then he has:
+
+$$
+100 - 15 = 85
+$$
+
+**G","$$
+100 - 15 = 85
+$$",15,0.05496978744752899,-0.0021769830030583157
+0,test:704,7,"Gerald's book cost **$15**, and he spent **$10**, so he had:
+
+$$
+15 - 10 = \boxed{5}
+$$
+
+So Gerald had **$5** left.","$$
+15 - 10 = \boxed{5}
+$$",15,0.06007534261661931,-0.01593955642565561
+0,test:704,9,"Gerald spent $15 on a book. The total money is $100.
+
+So, the amount of money Gerald has left is:
+
+$$
+100 - 15 = 85
+$$
+
+**Answer: Gerald","$$
+100 - 15 = 85
+$$",15,0.017864013797831528,0.0038604120368593915
+0,test:88,5,"If 10 times the number of copies sold by **Marilyn** equals 99,000:
+
+$$
+10 \times \text{Harald's sales} = 99,000
+$$
+
+","$$
+10 \times = 99,000
+",16,0.07079773171245733,0.08754046464146843
+0,test:1098,0,"If **Mike is 28 years old**, and **Martha is 4 years younger than Mike**, then:
+
+$$
+\text{Martha's age} = 28 - 4 = 24
+$$
+
+Since **","$$
+ = 28 - 4 = 24
+$$",15,0.05153408160270677,-0.011724371909319112
+0,test:1098,1,"If Mike is 28 years old, then Martha is:
+
+$$
+28 - 4 = 24
+$$
+
+Jeff is 10 years older than Martha, so:
+
+$$
+24 + 10 = 3","$$
+28 - 4 = 24
+$$24",22,0.008098651818969908,0.024599529420963034
+0,test:1098,5,"If **Mike is 24 years old**, and **Martha is 4 years younger** than Mike, then:
+
+$$
+\text{Martha's age} = 24 - 4 = 20
+$$
+
+Jeff","$$
+ = 24 - 4 = 20
+$$",15,-0.0051823802224589596,0.03695029285634822
+0,test:255,0,"We have 20 cows in 10 stalls, so each stall has:
+
+$$
+\frac{20}{10} = 2 \text{ cows per stall}
+$$
+
+Mr. Sylas buys 40 cows","$$
+\frac{20}{10} = 2$$",15,0.013281043099899156,-0.007281347760726931
+0,test:255,3,"There are **20 stalls**, each with **20 cows**, so a total of:
+
+$$
+20 \times 20 = 400 \text{ cows}
+$$
+
+Mr. Sylas buys **40 cows","$$
+20 \times 20 = 400$$",15,0.05695551049769468,-0.011140990122233537
+0,test:255,8,"There are 20 stalls initially. Each has 20 cows, so there are:
+
+$$
+20 \times 20 = 400 \text{ cows}
+$$
+
+Mr. Sylas buys 40 cows","$$
+20 \times 20 = 400$$",15,0.0965907855919795,-0.03448228034782611
+77,test:447,0,"Joey initially had 214 points before his turn. Then he scored 26 points, leading to a total of:
+
+$$
+214 + 26 = 240 \text{ points}
+$$
+
+Marcy","$$
+214 + 26 = 240$$",15,0.014507998478592299,-9.669563980689115e-05
+77,test:447,5,"Joey initially had 214 points before his turn, then scored 26 points. So, his total points after scoring were:
+
+$$
+214 + 26 = 240 \text{ points}
+$$
+
+","$$
+214 + 26 = 240$$",15,0.010766972374110157,0.025754451441093333
+77,test:1206,0,"John's house is worth $300,000.
+
+He gets a loan worth 40% of that:
+$$
+0.40 \times 300,000 = 0.40 \times","0.40 \times 300,000 =",20,0.02870404111785246,0.00519319963568338
+77,test:189,0,"Three friends spent $20.25 on 3 tickets, so the cost per ticket was:
+
+$$
+\frac{20.25}{3} = 6.75 \, \text{dollars per ticket}
+",\frac{20.25}{3} = 6.,17,0.008082659442796588,0.0038794496384454646
+77,test:161,4,"Anakin caught:
+- 10 starfish
+- 6 sea horses
+- 3 clownfish
+
+Total fish caught by Anakin:
+$$
+10 + 6 + 3 = 19 \text{ fish}
+$$","$$
+10 + 6 + 3 = 19$$",15,-0.015400658986016325,-0.010871263004626049
+77,test:161,8,"Anakin caught:
+- 10 starfish  
+- 6 sea horses  
+- 3 clownfish  
+
+Total fish caught by Anakin:
+$$
+10 + 6 + 3 = 19 \text{ fish}
+$$","$$
+10 + 6 + 3 = 19$$",15,-0.005838287656800508,0.04037992117956909
+251,test:189,5,"First, determine the total expenditure:
+
+- Total spent on tickets: $20.25
+- Number of tickets: 3
+- Total cost per ticket: $20.25 / 3 = 6.75 dollars", $20.25 / 3 = 6.75,15,0.012788777916845465,-0.015601847531809997

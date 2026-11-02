@@ -1,0 +1,37 @@
+{
+  "run": "qwen06b_sampled_a_normal_150",
+  "method": "Review of EOS responses against corrected targets. Final-answer correctness only; numeric magnitude with wrong direction is incorrect. Known source_issue records excluded. Conditional on EOS within 150 B tokens; not overall accuracy.",
+  "source_sha256": "aa7de6272a93360e30cfbb8d785994c57855a6e8a642d711d25b2ce863b4ecd5",
+  "summary": [
+    {
+      "step": 0,
+      "eos_responses": 227,
+      "source_issue_excluded": 6,
+      "graded": 221,
+      "correct": 87,
+      "incorrect": 134,
+      "accuracy": 0.3936651583710407,
+      "distinct_graded_questions": 40
+    },
+    {
+      "step": 77,
+      "eos_responses": 27,
+      "source_issue_excluded": 0,
+      "graded": 27,
+      "correct": 16,
+      "incorrect": 11,
+      "accuracy": 0.5925925925925926,
+      "distinct_graded_questions": 11
+    },
+    {
+      "step": 251,
+      "eos_responses": 18,
+      "source_issue_excluded": 0,
+      "graded": 18,
+      "correct": 2,
+      "incorrect": 16,
+      "accuracy": 0.1111111111111111,
+      "distinct_graded_questions": 6
+    }
+  ]
+}

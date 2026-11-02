@@ -1,0 +1,240 @@
+{
+  "coverage": {
+    "0": {
+      "attempted": 500,
+      "included": 273,
+      "excluded": 227,
+      "questions_represented": 43,
+      "a_early_eos": 0,
+      "b_early_eos": 227
+    },
+    "77": {
+      "attempted": 500,
+      "included": 473,
+      "excluded": 27,
+      "questions_represented": 50,
+      "a_early_eos": 0,
+      "b_early_eos": 27
+    },
+    "251": {
+      "attempted": 500,
+      "included": 482,
+      "excluded": 18,
+      "questions_represented": 50,
+      "a_early_eos": 0,
+      "b_early_eos": 18
+    }
+  },
+  "means": [
+    {
+      "window": "early_1_50",
+      "metric": "plasticity",
+      "step": 0,
+      "mean": 0.027567689036405767,
+      "low": 0.007775644337318563,
+      "high": 0.04865942854559458,
+      "n_questions": 43
+    },
+    {
+      "window": "early_1_50",
+      "metric": "plasticity",
+      "step": 77,
+      "mean": 0.010964940129592505,
+      "low": -0.0027731368587650108,
+      "high": 0.02600498139203913,
+      "n_questions": 50
+    },
+    {
+      "window": "early_1_50",
+      "metric": "plasticity",
+      "step": 251,
+      "mean": -0.009499891261755728,
+      "low": -0.020082038798513693,
+      "high": 0.0024028457003713007,
+      "n_questions": 50
+    },
+    {
+      "window": "early_1_50",
+      "metric": "empowerment",
+      "step": 0,
+      "mean": 0.001412982069141371,
+      "low": -0.007841864745444743,
+      "high": 0.011745163477960157,
+      "n_questions": 43
+    },
+    {
+      "window": "early_1_50",
+      "metric": "empowerment",
+      "step": 77,
+      "mean": -0.009308866606406924,
+      "low": -0.015237327085686168,
+      "high": -0.0033911294753342243,
+      "n_questions": 50
+    },
+    {
+      "window": "early_1_50",
+      "metric": "empowerment",
+      "step": 251,
+      "mean": -0.0010271280199816094,
+      "low": -0.007709339526101352,
+      "high": 0.006368970631075196,
+      "n_questions": 50
+    },
+    {
+      "window": "middle_51_100",
+      "metric": "plasticity",
+      "step": 0,
+      "mean": 0.015713121548646968,
+      "low": 0.011445091537778866,
+      "high": 0.020283555894347424,
+      "n_questions": 43
+    },
+    {
+      "window": "middle_51_100",
+      "metric": "plasticity",
+      "step": 77,
+      "mean": 0.009851659518427728,
+      "low": 0.0051686645253527855,
+      "high": 0.014735951816573861,
+      "n_questions": 50
+    },
+    {
+      "window": "middle_51_100",
+      "metric": "plasticity",
+      "step": 251,
+      "mean": -0.005040871733785313,
+      "low": -0.009422306666747102,
+      "high": -0.00037645339408471507,
+      "n_questions": 50
+    },
+    {
+      "window": "middle_51_100",
+      "metric": "empowerment",
+      "step": 0,
+      "mean": 0.0010073799019955309,
+      "low": -0.0016614745693485328,
+      "high": 0.0037723385107784452,
+      "n_questions": 43
+    },
+    {
+      "window": "middle_51_100",
+      "metric": "empowerment",
+      "step": 77,
+      "mean": 0.0022772653014102528,
+      "low": 0.0006389336706482368,
+      "high": 0.003849058170241815,
+      "n_questions": 50
+    },
+    {
+      "window": "middle_51_100",
+      "metric": "empowerment",
+      "step": 251,
+      "mean": 0.006220303270539823,
+      "low": 0.0032173753315050103,
+      "high": 0.009626035149270191,
+      "n_questions": 50
+    },
+    {
+      "window": "late_101_150",
+      "metric": "plasticity",
+      "step": 0,
+      "mean": 0.012566678680149072,
+      "low": 0.009028499456567364,
+      "high": 0.01597398258322411,
+      "n_questions": 43
+    },
+    {
+      "window": "late_101_150",
+      "metric": "plasticity",
+      "step": 77,
+      "mean": 0.008152352537654036,
+      "low": 0.005356368231762823,
+      "high": 0.011036272889983803,
+      "n_questions": 50
+    },
+    {
+      "window": "late_101_150",
+      "metric": "plasticity",
+      "step": 251,
+      "mean": -0.005206476430423019,
+      "low": -0.008185131770704714,
+      "high": -0.002067492938773876,
+      "n_questions": 50
+    },
+    {
+      "window": "late_101_150",
+      "metric": "empowerment",
+      "step": 0,
+      "mean": 0.00022403161231392601,
+      "low": -0.0021523440941571713,
+      "high": 0.0024858960946513467,
+      "n_questions": 43
+    },
+    {
+      "window": "late_101_150",
+      "metric": "empowerment",
+      "step": 77,
+      "mean": 0.0003717915429786031,
+      "low": -0.0008408074617774254,
+      "high": 0.001592885308503118,
+      "n_questions": 50
+    },
+    {
+      "window": "late_101_150",
+      "metric": "empowerment",
+      "step": 251,
+      "mean": 0.004567050539372166,
+      "low": 0.002388187518370933,
+      "high": 0.006835829655866823,
+      "n_questions": 50
+    }
+  ],
+  "common_question_count": 43,
+  "common_question_ids": [
+    "test:1098",
+    "test:1149",
+    "test:1206",
+    "test:1209",
+    "test:1232",
+    "test:1236",
+    "test:13",
+    "test:1309",
+    "test:1310",
+    "test:161",
+    "test:178",
+    "test:189",
+    "test:191",
+    "test:198",
+    "test:209",
+    "test:228",
+    "test:255",
+    "test:318",
+    "test:326",
+    "test:407",
+    "test:440",
+    "test:447",
+    "test:451",
+    "test:457",
+    "test:501",
+    "test:51",
+    "test:54",
+    "test:541",
+    "test:563",
+    "test:569",
+    "test:61",
+    "test:65",
+    "test:689",
+    "test:696",
+    "test:704",
+    "test:735",
+    "test:775",
+    "test:778",
+    "test:859",
+    "test:864",
+    "test:865",
+    "test:88",
+    "test:919"
+  ],
+  "method": "Only complete 150-token B responses, equal weight per represented question. Pointwise 95% bootstrap intervals (20000 question resamples). Checkpoints may contain different questions and selected trials; descriptive comparisons subject to length selection.",
+  "elapsed_inference_hours": 3.653493573581347
+}

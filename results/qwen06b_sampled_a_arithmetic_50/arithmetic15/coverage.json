@@ -1,0 +1,23 @@
+{
+  "coverage": {
+    "0": {
+      "total": 500,
+      "qualifying": 78,
+      "questions": 29
+    },
+    "77": {
+      "total": 500,
+      "qualifying": 6,
+      "questions": 4
+    },
+    "251": {
+      "total": 500,
+      "qualifying": 1,
+      "questions": 1
+    }
+  },
+  "common_question_ids": [
+    "test:189"
+  ],
+  "rule": "First 15 original generated token IDs overlapping explicit arithmetic spans, possibly noncontiguous. Requires at least 15 identifiable tokens within observed B<=50. Conservative regex heuristic, not validated semantic arithmetic annotation."
+}

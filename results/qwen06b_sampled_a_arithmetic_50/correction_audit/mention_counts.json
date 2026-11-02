@@ -1,0 +1,20 @@
+{
+  "0": {
+    "old_only": 80,
+    "revised_only": 279,
+    "neither": 90,
+    "both": 51
+  },
+  "77": {
+    "old_only": 164,
+    "revised_only": 183,
+    "neither": 133,
+    "both": 20
+  },
+  "251": {
+    "old_only": 312,
+    "both": 36,
+    "neither": 101,
+    "revised_only": 51
+  }
+}

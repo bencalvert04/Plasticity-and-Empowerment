@@ -1,0 +1,33 @@
+{
+  "instruction": "Solve the problem using the current information. Perform only the arithmetic needed and give the numerical answer. Do not restate the problem, repeat the correction, or add introductory text.",
+  "checkpoints": [
+    [
+      0,
+      "Qwen/Qwen3-0.6B",
+      "c1899de289a04d12100db370d81485cdf75e47ca"
+    ],
+    [
+      77,
+      "cmpatino/qwen-grpo-r2",
+      "628c96470d7289309a6fe9b1292b8039e7b66794"
+    ],
+    [
+      251,
+      "cmpatino/qwen-grpo-r5",
+      "06c0dac913ec3ca17e3a6418c136be7bf8fcedb8"
+    ]
+  ],
+  "ids": [
+    "test:1309",
+    "test:228",
+    "test:51",
+    "test:563",
+    "test:501"
+  ],
+  "trials": 1,
+  "fixed_a": "saved baseline trial 0",
+  "temperature": 1.0,
+  "cap": null,
+  "stopping": "EOS or model context capacity; capacity endings are censored",
+  "seed": 20261030
+}

@@ -6,6 +6,15 @@ three checkpoints within each of two GSM8K GRPO training lineages. These scores 
 sensitivity to context ablation**. They do not establish plasticity, formal
 directed information, correction-following accuracy, or empowerment.
 
+## Follow-up experiments: November 2, 2026
+
+See the [new experiment and findings overview](RESEARCH_UPDATE_2026-11-02.md) for
+fixed versus fresh A comparisons, 50- and 150-token B windows, exploratory
+arithmetic selection, correction-value audits, EOS-only answer grading, and the
+Daytona CPU speed check. Raw results and figures are included. These analyses
+retain the entropy-ablation interpretation and explicitly report response-length
+selection and incomplete-window limitations.
+
 ## Latest results: October 31, 2026, Qwen3-0.6B
 
 The completed **200-question x 20-rollout x 3-checkpoint** experiment contains
