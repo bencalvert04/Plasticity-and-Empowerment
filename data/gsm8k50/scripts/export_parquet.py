@@ -4,7 +4,7 @@ from pathlib import Path
 import pyarrow as pa
 import pyarrow.parquet as pq
 
-root = Path(__file__).resolve().parent
+root = Path(__file__).resolve().parents[1]  # data/gsm8k50
 source = json.loads((root / 'cases.json').read_text())
 rows = [{
     'id': c['id'],

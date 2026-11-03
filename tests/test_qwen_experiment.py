@@ -10,7 +10,7 @@ from sampled_rlvr_experiment import chat, continuation_prefix
 from build_gsm8k200 import arithmetic
 from analyze_checkpoint_statistics import analyze
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parents[1]
 
 
 class QwenTests(unittest.TestCase):

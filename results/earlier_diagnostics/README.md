@@ -12,7 +12,7 @@ pooled with it.
   one-example correction controls. Only one question had usable answer scores,
   and that answer was wrong.
 
-See [findings](../../FINDINGS.md) for the verified diagnostics and their scope.
+See [findings](../../docs/FINDINGS.md) for the verified diagnostics and their scope.
 The original file hashes are recorded in
 [the artifact manifest](../../provenance/artifact_sha256.json). Their runners are
 not supported entry points in this publication.

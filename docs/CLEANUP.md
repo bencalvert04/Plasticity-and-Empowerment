@@ -30,4 +30,4 @@ Removed tracked files remain recoverable from Git history. Existing local
 checkouts and uncommitted work were preserved. Older branches and open PRs are
 historical proposals and may still contain retired code; they are not additional
 supported workflows. Dataset records from PR #7 are incorporated with attribution
-in [provenance](provenance/README.md).
+in [provenance](../provenance/README.md).

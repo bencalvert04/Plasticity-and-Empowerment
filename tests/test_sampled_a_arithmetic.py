@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import patch
 from sampled_a_arithmetic_experiment import generate_trajectory
-from test_sampled_rlvr import Model,Tokenizer
+from tests.test_sampled_rlvr import Model,Tokenizer
 class Tests(unittest.TestCase):
     def test_fresh_a_and_b_with_independent_seeds(self):
         a=dict(token_ids=[5]*20,content_token_count=20,ended_at_eos=False)

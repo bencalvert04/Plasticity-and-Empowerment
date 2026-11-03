@@ -1,6 +1,6 @@
 import unittest
 import torch
-from test_sampled_rlvr import Model
+from tests.test_sampled_rlvr import Model
 from structured_calculation_experiment import score_regions, b_contexts, generate_b, FORMAT
 
 class CharacterTokenizer:
