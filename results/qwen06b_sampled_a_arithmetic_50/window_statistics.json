@@ -1,0 +1,395 @@
+{
+  "method": "Equal question means using joint complete-50 trials for all windows; 50000 question bootstrap draws seed 20261101, paired t tests, Holm correction over 18 checkpoint comparisons. Pointwise CIs. One training lineage.",
+  "coverage": {
+    "0": {
+      "recorded": 500,
+      "early25": 487,
+      "full50": 464,
+      "early_eos": 36
+    },
+    "77": {
+      "recorded": 500,
+      "early25": 500,
+      "full50": 500,
+      "early_eos": 0
+    },
+    "251": {
+      "recorded": 500,
+      "early25": 500,
+      "full50": 500,
+      "early_eos": 0
+    }
+  },
+  "omitted_question_ids": {
+    "early_1_25_plasticity": [],
+    "early_1_25_empowerment": [],
+    "later_26_50_plasticity": [],
+    "later_26_50_empowerment": [],
+    "full_1_50_plasticity": [],
+    "full_1_50_empowerment": []
+  },
+  "means": [
+    {
+      "window": "early_1_25",
+      "metric": "plasticity",
+      "step": 0,
+      "n_questions": 50,
+      "mean": 0.029108788595443347,
+      "low": 0.00901249086044801,
+      "high": 0.05033452177073386
+    },
+    {
+      "window": "early_1_25",
+      "metric": "plasticity",
+      "step": 77,
+      "n_questions": 50,
+      "mean": 0.019089878399176,
+      "low": -1.4524589827892745e-05,
+      "high": 0.04019128702818726
+    },
+    {
+      "window": "early_1_25",
+      "metric": "plasticity",
+      "step": 251,
+      "n_questions": 50,
+      "mean": 0.0064872886469420086,
+      "low": -0.0036047451512393382,
+      "high": 0.01714516173541349
+    },
+    {
+      "window": "early_1_25",
+      "metric": "empowerment",
+      "step": 0,
+      "n_questions": 50,
+      "mean": -0.010417252472594937,
+      "low": -0.024570129262411665,
+      "high": 0.006785173703597359
+    },
+    {
+      "window": "early_1_25",
+      "metric": "empowerment",
+      "step": 77,
+      "n_questions": 50,
+      "mean": -0.015281939753244702,
+      "low": -0.022474147702830495,
+      "high": -0.008192103529296503
+    },
+    {
+      "window": "early_1_25",
+      "metric": "empowerment",
+      "step": 251,
+      "n_questions": 50,
+      "mean": -0.004521932857917862,
+      "low": -0.01532212119692702,
+      "high": 0.006604112971874882
+    },
+    {
+      "window": "later_26_50",
+      "metric": "plasticity",
+      "step": 0,
+      "n_questions": 50,
+      "mean": 0.017387557670721213,
+      "low": 0.00969569151236506,
+      "high": 0.025043107457657986
+    },
+    {
+      "window": "later_26_50",
+      "metric": "plasticity",
+      "step": 77,
+      "n_questions": 50,
+      "mean": 0.00383872018156834,
+      "low": -0.00241661178638447,
+      "high": 0.01056872237678883
+    },
+    {
+      "window": "later_26_50",
+      "metric": "plasticity",
+      "step": 251,
+      "n_questions": 50,
+      "mean": -0.00487164702208032,
+      "low": -0.011824178288229736,
+      "high": 0.00368891848437368
+    },
+    {
+      "window": "later_26_50",
+      "metric": "empowerment",
+      "step": 0,
+      "n_questions": 50,
+      "mean": -0.010164588334450836,
+      "low": -0.014041965616919916,
+      "high": -0.006317201202690587
+    },
+    {
+      "window": "later_26_50",
+      "metric": "empowerment",
+      "step": 77,
+      "n_questions": 50,
+      "mean": -0.01002018370407707,
+      "low": -0.013358541531486376,
+      "high": -0.006744016995032632
+    },
+    {
+      "window": "later_26_50",
+      "metric": "empowerment",
+      "step": 251,
+      "n_questions": 50,
+      "mean": -0.0002838624792803498,
+      "low": -0.0060431023285054605,
+      "high": 0.005409160222754247
+    },
+    {
+      "window": "full_1_50",
+      "metric": "plasticity",
+      "step": 0,
+      "n_questions": 50,
+      "mean": 0.02324817313308228,
+      "low": 0.011134614297099445,
+      "high": 0.03584958707929953
+    },
+    {
+      "window": "full_1_50",
+      "metric": "plasticity",
+      "step": 77,
+      "n_questions": 50,
+      "mean": 0.011464299290372171,
+      "low": -0.0004950975989519735,
+      "high": 0.024545860305353932
+    },
+    {
+      "window": "full_1_50",
+      "metric": "plasticity",
+      "step": 251,
+      "n_questions": 50,
+      "mean": 0.0008078208124308457,
+      "low": -0.005759196369495235,
+      "high": 0.007996457946306762
+    },
+    {
+      "window": "full_1_50",
+      "metric": "empowerment",
+      "step": 0,
+      "n_questions": 50,
+      "mean": -0.010290920403522884,
+      "low": -0.0179479074875293,
+      "high": -0.0013289763249295355
+    },
+    {
+      "window": "full_1_50",
+      "metric": "empowerment",
+      "step": 77,
+      "n_questions": 50,
+      "mean": -0.012651061728660887,
+      "low": -0.016942581342576753,
+      "high": -0.008441121196807103
+    },
+    {
+      "window": "full_1_50",
+      "metric": "empowerment",
+      "step": 251,
+      "n_questions": 50,
+      "mean": -0.002402897668599106,
+      "low": -0.008129041438691444,
+      "high": 0.003386914677859414
+    }
+  ],
+  "comparisons": [
+    {
+      "window": "early_1_25",
+      "metric": "plasticity",
+      "step_from": 0,
+      "step_to": 77,
+      "difference": -0.010018910196267349,
+      "low": -0.026358918870906235,
+      "high": 0.006103997951892678,
+      "p_raw": 0.23516291832262487,
+      "p_holm_18": 1.0
+    },
+    {
+      "window": "early_1_25",
+      "metric": "plasticity",
+      "step_from": 0,
+      "step_to": 251,
+      "difference": -0.022621499948501336,
+      "low": -0.042542708779987184,
+      "high": -0.0033443964598668537,
+      "p_raw": 0.028903283633920696,
+      "p_holm_18": 0.31793611997312765
+    },
+    {
+      "window": "early_1_25",
+      "metric": "plasticity",
+      "step_from": 77,
+      "step_to": 251,
+      "difference": -0.012602589752233988,
+      "low": -0.02982009122907899,
+      "high": 0.0035213422825365118,
+      "p_raw": 0.14777681897870093,
+      "p_holm_18": 0.9370768560549346
+    },
+    {
+      "window": "early_1_25",
+      "metric": "empowerment",
+      "step_from": 0,
+      "step_to": 77,
+      "difference": -0.004864687280649763,
+      "low": -0.02340547074177862,
+      "high": 0.010759838641656383,
+      "p_raw": 0.5811675971986283,
+      "p_holm_18": 1.0
+    },
+    {
+      "window": "early_1_25",
+      "metric": "empowerment",
+      "step_from": 0,
+      "step_to": 251,
+      "difference": 0.005895319614677077,
+      "low": -0.0144213455893572,
+      "high": 0.023448735892901307,
+      "p_raw": 0.5489390288471415,
+      "p_holm_18": 1.0
+    },
+    {
+      "window": "early_1_25",
+      "metric": "empowerment",
+      "step_from": 77,
+      "step_to": 251,
+      "difference": 0.01076000689532684,
+      "low": -0.0019669478872776035,
+      "high": 0.024141600976824794,
+      "p_raw": 0.11713460700686683,
+      "p_holm_18": 0.9370768560549346
+    },
+    {
+      "window": "later_26_50",
+      "metric": "plasticity",
+      "step_from": 0,
+      "step_to": 77,
+      "difference": -0.013548837489152872,
+      "low": -0.021716038438768022,
+      "high": -0.005483734710907622,
+      "p_raw": 0.0021310398959882835,
+      "p_holm_18": 0.034096638335812536
+    },
+    {
+      "window": "later_26_50",
+      "metric": "plasticity",
+      "step_from": 0,
+      "step_to": 251,
+      "difference": -0.022259204692801533,
+      "low": -0.03218454231369557,
+      "high": -0.010965940202882244,
+      "p_raw": 0.00017573733876653205,
+      "p_holm_18": 0.003163272097797577
+    },
+    {
+      "window": "later_26_50",
+      "metric": "plasticity",
+      "step_from": 77,
+      "step_to": 251,
+      "difference": -0.00871036720364866,
+      "low": -0.01785405049108442,
+      "high": 0.0014425981791898305,
+      "p_raw": 0.08818140353114416,
+      "p_holm_18": 0.7936326317802974
+    },
+    {
+      "window": "later_26_50",
+      "metric": "empowerment",
+      "step_from": 0,
+      "step_to": 77,
+      "difference": 0.0001444046303737638,
+      "low": -0.005400708983471134,
+      "high": 0.005769875116148907,
+      "p_raw": 0.9599740340112268,
+      "p_holm_18": 1.0
+    },
+    {
+      "window": "later_26_50",
+      "metric": "empowerment",
+      "step_from": 0,
+      "step_to": 251,
+      "difference": 0.009880725855170486,
+      "low": 0.0033475184593702834,
+      "high": 0.016440753692281432,
+      "p_raw": 0.00512370501495683,
+      "p_holm_18": 0.0666081651944388
+    },
+    {
+      "window": "later_26_50",
+      "metric": "empowerment",
+      "step_from": 77,
+      "step_to": 251,
+      "difference": 0.009736321224796722,
+      "low": 0.003475210871404887,
+      "high": 0.016115292922951666,
+      "p_raw": 0.004295997155787089,
+      "p_holm_18": 0.06443995733680634
+    },
+    {
+      "window": "full_1_50",
+      "metric": "plasticity",
+      "step_from": 0,
+      "step_to": 77,
+      "difference": -0.011783873842710109,
+      "low": -0.02194016250242246,
+      "high": -0.001978504280993847,
+      "p_raw": 0.025661786635086017,
+      "p_holm_18": 0.3079414396210322
+    },
+    {
+      "window": "full_1_50",
+      "metric": "plasticity",
+      "step_from": 0,
+      "step_to": 251,
+      "difference": -0.02244035232065143,
+      "low": -0.034298762560191286,
+      "high": -0.010675261896172438,
+      "p_raw": 0.0005704116936209762,
+      "p_holm_18": 0.009696998791556596
+    },
+    {
+      "window": "full_1_50",
+      "metric": "plasticity",
+      "step_from": 77,
+      "step_to": 251,
+      "difference": -0.010656478477941324,
+      "low": -0.021978668954764666,
+      "high": 0.00021747680811097498,
+      "p_raw": 0.06890394578071261,
+      "p_holm_18": 0.6890394578071262
+    },
+    {
+      "window": "full_1_50",
+      "metric": "empowerment",
+      "step_from": 0,
+      "step_to": 77,
+      "difference": -0.002360141325138001,
+      "low": -0.012554915243540788,
+      "high": 0.006530433355954557,
+      "p_raw": 0.632069764873765,
+      "p_holm_18": 1.0
+    },
+    {
+      "window": "full_1_50",
+      "metric": "empowerment",
+      "step_from": 0,
+      "step_to": 251,
+      "difference": 0.007888022734923781,
+      "low": -0.0024371235976749723,
+      "high": 0.017250345549120548,
+      "p_raw": 0.12663980140481168,
+      "p_holm_18": 0.9370768560549346
+    },
+    {
+      "window": "full_1_50",
+      "metric": "empowerment",
+      "step_from": 77,
+      "step_to": 251,
+      "difference": 0.010248164060061783,
+      "low": 0.0037156375944023155,
+      "high": 0.01702233469824554,
+      "p_raw": 0.0045796929465738824,
+      "p_holm_18": 0.06443995733680634
+    }
+  ]
+}

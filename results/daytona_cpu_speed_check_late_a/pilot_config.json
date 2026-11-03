@@ -1,0 +1,14 @@
+{
+  "a_min_content_tokens": 75,
+  "a_safety_cap": 2048,
+  "a_source_positions": "75 through final non-EOS token",
+  "b_scored_positions": "51-100 inclusive",
+  "b_cap": 100,
+  "temperature": 1.0,
+  "device": "cpu",
+  "dtype": "float32",
+  "question_id": "test:51",
+  "pilot": "one question, one trial per checkpoint; timing only, not research conclusions",
+  "empowerment_baseline": "Retain A tokens 1-74; remove late A. Previous B tokens identical in all contexts.",
+  "metric": "entropy ablation proxies, not formal DI"
+}

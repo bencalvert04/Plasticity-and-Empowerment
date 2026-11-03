@@ -1,0 +1,45 @@
+{
+  "status": "complete",
+  "sandbox_deleted": true,
+  "question_id": "test:51",
+  "attempted_checkpoints": 3,
+  "valid_scored_checkpoints": 2,
+  "censored_checkpoint": 251,
+  "source_sha256": {
+    "daytona_pilot/late_a_pilot.py": "0e851b68ecfdc65f54f01f2741496e084cee56a72f23bfc716c9e8b9c702587c",
+    "sampled_rlvr_experiment.py": "1081bfee5f2b60d31c5d7a34751ce634373c9a6eca710b0a9a977debf62591de",
+    "structured_calculation_experiment.py": "033a1c4a782a76142f0bbaa628fcb19f1b7395ff649657895d141e8f227a9738"
+  },
+  "timings": [
+    {
+      "step": 0,
+      "loading_seconds": 6.972556550055742,
+      "a_content_tokens": 180,
+      "a_seconds": 23.593860547989607,
+      "b_seconds": 41.3117989897728,
+      "a_eligible": true
+    },
+    {
+      "step": 77,
+      "loading_seconds": 126.0466505587101,
+      "a_content_tokens": 334,
+      "a_seconds": 47.6574467420578,
+      "b_seconds": 46.103634372353554,
+      "a_eligible": true
+    },
+    {
+      "step": 251,
+      "loading_seconds": 45.85182224959135,
+      "a_content_tokens": 2048,
+      "a_seconds": 317.87476771324873,
+      "b_seconds": null,
+      "a_eligible": false
+    }
+  ],
+  "timing_breakdown_seconds": {
+    "successful_controller_wall_approx": 701.1872,
+    "model_download_and_load": 178.871,
+    "generation_and_scoring": 476.5415,
+    "combined_setup_dependencies_polling_transfer_cleanup_approx": 45.7747
+  }
+}

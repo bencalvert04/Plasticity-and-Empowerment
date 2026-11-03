@@ -1,0 +1,23 @@
+[
+  {
+    "step": 0,
+    "qualifying_responses": 78,
+    "n_questions": 29,
+    "plasticity": 0.02303650339121423,
+    "empowerment": 0.007331858992645508
+  },
+  {
+    "step": 77,
+    "qualifying_responses": 6,
+    "n_questions": 4,
+    "plasticity": 0.009701178166397966,
+    "empowerment": 0.009163964065560895
+  },
+  {
+    "step": 251,
+    "qualifying_responses": 1,
+    "n_questions": 1,
+    "plasticity": 0.012788777916845465,
+    "empowerment": -0.015601847531809997
+  }
+]

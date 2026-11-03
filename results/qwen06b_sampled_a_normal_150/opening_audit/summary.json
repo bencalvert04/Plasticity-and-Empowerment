@@ -1,0 +1,68 @@
+{
+  "method": "Exploratory regex estimates, not semantic annotation. Counts original B token IDs overlapping text units before first detectable numerical arithmetic. Explicit acknowledgment uses correction language; revised-value sentences may restate the problem or mention another quantity. No detectable arithmetic is censored at observed B length; opening mean uses only detected cases. Includes early EOS.",
+  "summary": {
+    "0": {
+      "responses": 500,
+      "aligned": 497,
+      "explicit_arithmetic_detected": 463,
+      "explicit_acknowledgment_tokens": {
+        "mean": 1.5533199195171026,
+        "median": 0,
+        "responses_with_match": 57,
+        "mean_when_present": 13.543859649122806
+      },
+      "revised_value_sentence_tokens": {
+        "mean": 14.285714285714286,
+        "median": 12,
+        "responses_with_match": 309,
+        "mean_when_present": 22.977346278317153
+      },
+      "opening_before_detected_arithmetic": {
+        "mean": 46.92008639308855,
+        "median": 39
+      }
+    },
+    "77": {
+      "responses": 500,
+      "aligned": 500,
+      "explicit_arithmetic_detected": 444,
+      "explicit_acknowledgment_tokens": {
+        "mean": 4.616,
+        "median": 0.0,
+        "responses_with_match": 88,
+        "mean_when_present": 26.227272727272727
+      },
+      "revised_value_sentence_tokens": {
+        "mean": 14.896,
+        "median": 10.5,
+        "responses_with_match": 262,
+        "mean_when_present": 28.427480916030536
+      },
+      "opening_before_detected_arithmetic": {
+        "mean": 72.15090090090091,
+        "median": 71.0
+      }
+    },
+    "251": {
+      "responses": 500,
+      "aligned": 495,
+      "explicit_arithmetic_detected": 395,
+      "explicit_acknowledgment_tokens": {
+        "mean": 1.8606060606060606,
+        "median": 0,
+        "responses_with_match": 28,
+        "mean_when_present": 32.892857142857146
+      },
+      "revised_value_sentence_tokens": {
+        "mean": 4.797979797979798,
+        "median": 0,
+        "responses_with_match": 72,
+        "mean_when_present": 32.986111111111114
+      },
+      "opening_before_detected_arithmetic": {
+        "mean": 77.9873417721519,
+        "median": 77
+      }
+    }
+  }
+}

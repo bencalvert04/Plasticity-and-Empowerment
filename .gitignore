@@ -5,3 +5,9 @@ __pycache__/
 .pytest_cache/
 /runs/
 *.tmp.parquet
+/daytona_pilot/*.log
+/daytona_pilot/process.json
+/daytona_pilot/sandbox.json
+/daytona_pilot/failure.json
+/daytona_pilot/pilot_config.json
+/daytona_pilot/pilot_results.json
