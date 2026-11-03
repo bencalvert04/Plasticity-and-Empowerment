@@ -1,25 +1,102 @@
 # Plasticity and Empowerment: context-ablation experiments
 
-This repository studies how removing a question, a correction, or earlier output
-changes a language model's next-token entropy. The experiments compare
-three checkpoints within each of two GSM8K GRPO training lineages. These scores measure **entropy
-sensitivity to context ablation**. They do not establish plasticity, formal
-directed information, correction-following accuracy, or empowerment.
+This repository studies how a language model's next-token entropy changes when a
+piece of context is removed: the question, a mid-response correction, or the
+model's own earlier output. We compare checkpoints from GSM8K GRPO training runs
+to see how these sensitivities change with additional RL training.
 
-## Follow-up experiments: November 2, 2026
+> **What the numbers mean.** "Plasticity" (sensitivity to a correction) and
+> "empowerment" (sensitivity to earlier output) are working labels for
+> **entropy sensitivity to context ablation**, in bits/token. They are not formal
+> directed information, channel capacity, or correction-following accuracy.
+> [docs/METHODS.md](docs/METHODS.md) defines every context and score.
 
-See the [new experiment and findings overview](RESEARCH_UPDATE_2026-11-02.md) for
-fixed versus fresh A comparisons, 50- and 150-token B windows, exploratory
-arithmetic selection, correction-value audits, EOS-only answer grading, and the
-Daytona CPU speed check. Raw results and figures are included. These analyses
-retain the entropy-ablation interpretation and explicitly report response-length
-selection and incomplete-window limitations.
+## How an experiment works
 
-## Latest results: October 31, 2026, Qwen3-0.6B
+1. **Prompt** the model with a GSM8K question and let it generate **Output A**.
+2. **Inject** a question-specific correction (for example, "Actually, the price
+   was $5, not $6").
+3. Let the model generate **Output B**, and at each B position compare the
+   entropy under the full context with the entropy after removing one source:
 
-The completed **200-question x 20-rollout x 3-checkpoint** experiment contains
-12,000 raw rollouts and 600 question/checkpoint summaries. Means below are in
-bits/token; brackets are pointwise 95% question-bootstrap confidence intervals.
+| Score | Context removed | Interpreted as |
+|---|---|---|
+| Input to Output A | the question | prompt sensitivity |
+| Injection to Output B | the correction | "plasticity" |
+| Output A to Output B | earlier output A | "empowerment" |
+
+## Repository layout
+
+```
+.
+├── README.md                    You are here
+├── QWEN06B_EXPERIMENT.md        Protocol: Qwen3-0.6B models, checkpoints, setup   (pinned, see below)
+├── FIXED_A_OPENING.md           Protocol: fixed-A / supplied-opening follow-up    (pinned, see below)
+│
+├── docs/
+│   ├── METHODS.md               Definitions of contexts, scores, and statistics
+│   ├── FINDINGS.md              Full findings for the 1.7B study and earlier diagnostics
+│   ├── CLEANUP.md               Which older scripts were retired, and why
+│   └── updates/
+│       └── 2026-11-02.md        Follow-up experiments: windows, audits, Daytona check
+│
+├── experiment_config.py         Pinned 1.7B checkpoints and default dataset
+├── sampled_rlvr_experiment.py   Main inference runner (A → correction → B)
+├── structured_calculation_experiment.py  Shared B-generation helpers
+├── windowed_arithmetic_experiment.py     Follow-up runner: fixed A, arithmetic-only B50
+├── sampled_a_arithmetic_experiment.py    Follow-up runner: fresh A, arithmetic-only B50
+├── sampled_a_normal150_experiment.py     Follow-up runner: fresh A, normal correction, B150
+├── sampled_a_arithmetic150_experiment.py UNRUN DRAFT, not used for any result
+├── run_qwen06b_pipeline.py      End-to-end driver for the Qwen3-0.6B 200-question run
+├── build_gsm8k200.py            Builds the 200-question dataset
+├── verify_results.py            Audits saved results without loading a model
+├── analyze_checkpoint_statistics.py  Bootstrap CIs, paired tests, Holm correction
+├── plot_checkpoint_means.py     Checkpoint-means figure
+│
+├── configs/                     Model/checkpoint manifests (e.g. qwen06b_gsm8k200.json)
+├── data/
+│   ├── gsm8k50/                 50 screened questions + corrections (+ scripts/ to rebuild)
+│   └── gsm8k200/                200-question superset used by the Qwen3-0.6B run
+├── results/                     One folder per completed run (raw Parquet, stats, figures)
+├── analysis/                    Analysis/plot scripts for the follow-up runs
+├── provenance/                  Source snapshots, hash manifests, and audit records
+├── daytona_pilot/               Cloud CPU speed-check controller (Daytona)
+├── tests/                       Unit tests (no model downloads needed)
+├── requirements.txt             Full inference environment
+└── requirements-analysis.txt    Lightweight analysis-only environment
+```
+
+### Why some files stay at the top level
+
+The runners at the repository root, `experiment_config.py`, `configs/`,
+`FIXED_A_OPENING.md`, and `QWEN06B_EXPERIMENT.md` are **pinned by SHA-256 hash and
+path** in `provenance/` manifests, and hashed result READMEs link to them. Their
+current contents byte-match the code that produced the published results. Do not
+move or edit them, and do not move files under `data/` or `results/`. If you need
+to change a runner, add a new file and record new provenance for any new run.
+
+## Experiment index
+
+Listed newest first. All entropy figures are in bits/token.
+
+| Date | Experiment | Model / checkpoints | Runner | Results | Write-up |
+|---|---|---|---|---|---|
+| 2026-11-02 | Daytona CPU speed check, late-A protocol (1 question) | Qwen3-0.6B, steps 0/77/251 | `daytona_pilot/` | [results/daytona_cpu_speed_check_late_a](results/daytona_cpu_speed_check_late_a/README.md) | [update](docs/updates/2026-11-02.md) |
+| 2026-11-02 | Fresh A, normal correction, B windows up to 150 tokens | Qwen3-0.6B | `sampled_a_normal150_experiment.py` | [results/qwen06b_sampled_a_normal_150](results/qwen06b_sampled_a_normal_150) | [update](docs/updates/2026-11-02.md) |
+| 2026-11-02 | Fresh A, arithmetic-only B50 | Qwen3-0.6B | `sampled_a_arithmetic_experiment.py` | [results/qwen06b_sampled_a_arithmetic_50](results/qwen06b_sampled_a_arithmetic_50) | [update](docs/updates/2026-11-02.md) |
+| 2026-11-02 | Fixed A, arithmetic-only B50 | Qwen3-0.6B | `windowed_arithmetic_experiment.py` | [results/qwen06b_fixed_a_arithmetic_50](results/qwen06b_fixed_a_arithmetic_50) | [update](docs/updates/2026-11-02.md) |
+| 2026-11-02 | Fixed A, no supplied opening (control) | Qwen3-0.6B | `sampled_rlvr_experiment.py` | [results/qwen06b_original50_fixed_a_no_opening](results/qwen06b_original50_fixed_a_no_opening) | [update](docs/updates/2026-11-02.md) |
+| 2026-11-02 | B-length pilot (5 questions) | Qwen3-0.6B | `results/b_length_pilot/run_pilot.py` | [results/b_length_pilot](results/b_length_pilot) | [update](docs/updates/2026-11-02.md) |
+| 2026-11-01 | Fixed A + "The calculation is" opening | Qwen3-0.6B | `sampled_rlvr_experiment.py` | [results/qwen06b_original50_fixed_a_calculation](results/qwen06b_original50_fixed_a_calculation/README.md) | [FIXED_A_OPENING.md](FIXED_A_OPENING.md) |
+| 2026-10-31 | **200 questions × 20 rollouts × 3 checkpoints** | Qwen3-0.6B, steps 0/77/251 | `run_qwen06b_pipeline.py` | [results/qwen06b_gsm8k200_20rollouts](results/qwen06b_gsm8k200_20rollouts/README.md) | [QWEN06B_EXPERIMENT.md](QWEN06B_EXPERIMENT.md) |
+| 2026-10-30 | **50 questions × 20 rollouts × 3 checkpoints** | 1.7B SFT → GRPO, steps 0/50/100 | `sampled_rlvr_experiment.py` | [results/sampled_rlvr_50x20](results/sampled_rlvr_50x20) | [FINDINGS.md](docs/FINDINGS.md) |
+| earlier | Directed-information and answer-level diagnostics | various | retired, see [CLEANUP.md](docs/CLEANUP.md) | [results/earlier_diagnostics](results/earlier_diagnostics/README.md) | [FINDINGS.md](docs/FINDINGS.md) |
+
+## Key results
+
+### Qwen3-0.6B, 200 questions (October 31, 2026)
+
+12,000 rollouts; means with pointwise 95% question-bootstrap confidence intervals.
 
 | Measurement | Step 0 | Step 77 | Step 251 |
 |---|---:|---:|---:|
@@ -29,33 +106,30 @@ bits/token; brackets are pointwise 95% question-bootstrap confidence intervals.
 
 ![Qwen3-0.6B checkpoint means and confidence intervals](results/qwen06b_gsm8k200_20rollouts/checkpoint_means.png)
 
-**Injection to Output B decreases at every stage**, consistent with the direction
-in the earlier experiment. This supports a reduced-plasticity hypothesis through
-an entropy proxy; correction-following behavior was not measured.
+- **Injection to Output B decreases at every stage**, matching the direction seen
+  in the 1.7B study. That fits a reduced-plasticity hypothesis via an entropy
+  proxy; correction-following behavior was not measured.
+- **Output A to Output B drops early and then shows no detectable change**; its
+  final interval includes zero. This does not establish a general reversal of
+  empowerment.
 
-**Output A to Output B decreases early and then shows no detectable further
-change.** Its final confidence interval includes zero. The earlier experiment's
-increase was not significant after correction, so these results do not establish
-a general reversal of empowerment. Differences between models, training, chat
-framing, and question selection limit the comparison.
+### Follow-ups (November 2, 2026)
 
-Read the [full results and explanation](results/qwen06b_gsm8k200_20rollouts/README.md)
-for all nine comparisons, the original-50-question sensitivity check, completion
-rates, audit findings, and commands to reproduce the analysis. The [raw data and
-figures](results/qwen06b_gsm8k200_20rollouts), [200 questions and injections](data/gsm8k200),
-[model setup](QWEN06B_EXPERIMENT.md), and [source snapshots and audit](provenance/qwen06b/README.md)
-are included in the repository.
+Five further 1,500-evaluation runs on the original 50 questions vary whether A is
+fixed or fresh, the B opening, and the B window length. Highlights:
 
-## Previous results: October 30, 2026, 1.7B
+- Supplying "The calculation is" as a B opening materially changes the
+  earlier-output pattern. The choice of opening matters.
+- With the normal correction and 150-token B windows, correction sensitivity
+  decreases in every window. Earlier-output sensitivity rises numerically in
+  later windows, but checkpoints retain very different response populations
+  (273, 473, and 482 of 500 complete), so means compare selected subsets.
+- Behavioral audits (correction-value mentions, EOS-only answer grading, opening
+  length) are heuristic diagnostics, not validated accuracy.
 
-The completed run contains **50 screened GSM8K test questions × 20 sampled
-rollouts × 3 checkpoints = 3,000 rollouts**. Each rollout attempts 20 tokens of
-Output A, inserts the question-specific correction, then attempts 20 tokens of
-Output B. Checkpoint 0 is already an SFT model, before the additional GRPO run.
+Details, figures, and caveats are in [docs/updates/2026-11-02.md](docs/updates/2026-11-02.md).
 
-Means below weight each question equally after averaging its available complete
-rollouts. Units are bits per token; brackets are pointwise 95% question-bootstrap
-intervals.
+### 1.7B, 50 questions (October 30, 2026)
 
 | Context ablated | Step 0 | Step 50 | Step 100 |
 |---|---:|---:|---:|
@@ -63,67 +137,64 @@ intervals.
 | Correction, when scoring B | 0.3414 [0.3096, 0.3750] | 0.1232 [0.0866, 0.1630] | 0.0802 [0.0501, 0.1133] |
 | Earlier output A, when scoring B | 0.0417 [0.0236, 0.0620] | 0.0581 [0.0467, 0.0704] | 0.0753 [0.0604, 0.0902] |
 
-Prompt-ablation scores increase from step 0 to 100; correction-ablation scores
-decrease. The earlier-output score increases numerically, but **none of its three
-checkpoint comparisons passes the 0.05 threshold after Holm correction**. This
-is not evidence that RLVR causes loss of plasticity or increased empowerment.
+Correction sensitivity decreases. The earlier-output score rises numerically,
+but **none of its checkpoint comparisons survives Holm correction**. The
+historical runner hash for this run does not match the published source; see
+[provenance](provenance/README.md). Full analysis is in [docs/FINDINGS.md](docs/FINDINGS.md).
 
-![Checkpoint means, intervals, and adjusted paired-test results](results/sampled_rlvr_50x20/checkpoint_means.png)
+### Limitations common to all studies
 
-Full A+B completion rates are 98.0%, 94.7%, and 97.0%. Scores are conditional on
-completion; early endings are missing values, not zeros. The questions were
-screened for long Qwen responses, and these are checkpoints from one training
-run. Uncertainty across independently trained models is not measured.
+Checkpoints come from single training lineages, so variation across
+independently trained models is not measured. Questions were screened for long
+responses, scores are conditional on span completion, and early endings are
+missing values, not zeros.
 
-**Provenance limitation:** the historical run's recorded runner hash does not
-match the source available at publication. Raw-data arithmetic and saved
-summaries verify, but exact historical code identity is unresolved. See
-[provenance](provenance/README.md).
+## Quick start
 
-Read [findings](FINDINGS.md) for all nine comparisons, robustness checks, and
-lessons from earlier runs. [Methods](METHODS.md) defines the contexts and scores.
+### Reproduce the published analysis (no model download)
 
-## Reproduce the analysis without loading a model
-
-Python 3.10 or newer:
+Requires Python 3.10+.
 
 ```sh
 python3 -m pip install -r requirements-analysis.txt
-python3 verify_results.py
-python3 analyze_checkpoint_statistics.py
-python3 plot_checkpoint_means.py
+python3 verify_results.py                 # audit hashes, rollout grid, entropy arithmetic
+python3 analyze_checkpoint_statistics.py  # bootstrap CIs + Holm-corrected paired tests
+python3 plot_checkpoint_means.py          # regenerate the checkpoint figure
 ```
 
-The verifier checks artifact hashes, the full rollout grid, dataset fields,
-checkpoint revisions, seeds, entropy differences, missing-value handling, and
-all question-level means/SDs/SEMs. Analysis uses 50,000 bootstrap draws and
-question-paired t-tests, with Holm correction across nine primary comparisons.
-The plot reads the regenerated interval table directly.
+These default to the 1.7B results in `results/sampled_rlvr_50x20`. Pass
+`--results-dir` to point at another result folder. Note that the analysis script
+rewrites files in that folder.
 
-Published inputs are in [data/gsm8k50](data/gsm8k50/README.md). Raw rollouts,
-question summaries, configuration, statistics, and figures are in
-[results/sampled_rlvr_50x20](results/sampled_rlvr_50x20).
+To rerun a follow-up analysis, copy its bundle into the gitignored `runs/`
+directory first (the analysis scripts read from there):
 
-## Run a new experiment
+```sh
+mkdir -p runs && cp -R results/qwen06b_sampled_a_normal_150 runs/
+python3 analysis/sampled_a_normal150_control/analyze_results.py
+```
+
+### Run the tests
 
 ```sh
 python3 -m pip install -r requirements.txt
 python3 -m unittest -v
+```
+
+Tests live in `tests/` and use tiny mock models, so they need no downloads.
+
+### Run a new experiment
+
+```sh
 python3 sampled_rlvr_experiment.py --output-dir runs/my-run
-# Resume only this new run, with identical code and settings:
-python3 sampled_rlvr_experiment.py --output-dir runs/my-run --resume
-# Analyze a completed new run:
+python3 sampled_rlvr_experiment.py --output-dir runs/my-run --resume   # same code + settings only
 python3 analyze_checkpoint_statistics.py --results-dir runs/my-run
 python3 plot_checkpoint_means.py --results-dir runs/my-run
 ```
 
-Defaults are 50 questions, 20 rollouts each, pinned checkpoints, temperature 1,
-full-softmax sampling, and EOS enabled. `--limit 1 --rollouts 1` provides a small
-execution check, still loading all three models. Downloads and inference are
-required for a new run. The runner uses Apple MPS when available, otherwise CPU;
-its default output is gitignored under `runs/`. Do not resume the published
-historical run with the edited runner. Device and library differences can change
-sampled trajectories.
-
-There is one supported inference entry point: `sampled_rlvr_experiment.py`.
-[Cleanup notes](CLEANUP.md) explain which older scripts were retired and why.
+The defaults are 50 questions, 20 rollouts, the pinned 1.7B checkpoints,
+temperature 1, and EOS enabled. Use `--experiment-config
+configs/qwen06b_gsm8k200.json` for the Qwen3-0.6B models, or `--limit 1
+--rollouts 1` for a quick smoke test (this still loads all three models). The
+runner uses Apple MPS when available, otherwise CPU, and writes to the gitignored
+`runs/` directory. Never `--resume` a published historical run with edited code.

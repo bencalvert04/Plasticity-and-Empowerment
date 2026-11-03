@@ -3,14 +3,14 @@
 ## Qwen3-0.6B: completed October 31, 2026
 
 The new 12,000-rollout experiment is published with its [full explanation,
-confidence intervals, adjusted tests, and robustness checks](results/qwen06b_gsm8k200_20rollouts/README.md).
+confidence intervals, adjusted tests, and robustness checks](../results/qwen06b_gsm8k200_20rollouts/README.md).
 Injection to Output B declines at every stage, as in the previous experiment.
 Output A to Output B declines early and then shows no detectable later change;
 its final confidence interval includes zero. This supports a decrease in the
 measured correction-entropy proxy, not a demonstrated behavioral loss of
 plasticity or a general reversal of formal empowerment.
 
-The [audit record](provenance/qwen06b/README.md) distinguishes exact saved-data
+The [audit record](../provenance/qwen06b/README.md) distinguishes exact saved-data
 verification from limited model replays and the older run's unresolved source
 identity. The previous results below remain separate.
 
@@ -18,7 +18,7 @@ identity. The previous results below remain separate.
 
 The October 30, 2026 run contains all 3,000 planned rollouts and 150
 question/checkpoint summaries. See [methods](METHODS.md) for the estimand and
-[provenance](provenance/README.md) for the unresolved historical runner hash.
+[provenance](../provenance/README.md) for the unresolved historical runner hash.
 Results below are internally verified saved-data findings, subject to that limit.
 
 Differences are later checkpoint minus earlier checkpoint, in bits/token.
@@ -75,8 +75,8 @@ whether those items drive the result. They do not drive the main directions or
 the 0-to-100 adjusted significance decisions. Completion conditioning and
 selection of long Qwen responses remain limitations in both checks.
 
-Machine-readable evidence: [primary statistics](results/sampled_rlvr_50x20/checkpoint_statistics.json)
-and [sensitivity checks](results/sampled_rlvr_50x20/sensitivity_checks.json).
+Machine-readable evidence: [primary statistics](../results/sampled_rlvr_50x20/checkpoint_statistics.json)
+and [sensitivity checks](../results/sampled_rlvr_50x20/sensitivity_checks.json).
 
 ## Earlier experiments: diagnostic lessons only
 
@@ -109,8 +109,8 @@ establish negligible information. The input calculation enumerated all 50
 questions, so its posterior concentration is a different issue from finite-particle
 source collapse in the two B estimators.
 
-The [saved summary](results/earlier_diagnostics/directed_information_summary.json)
-and [raw records](results/earlier_diagnostics/directed_information.parquet) are
+The [saved summary](../results/earlier_diagnostics/directed_information_summary.json)
+and [raw records](../results/earlier_diagnostics/directed_information.parquet) are
 retained to support this diagnosis. Their historical `di` field names and saved
 unit-test count are not certifications of estimator convergence. The unvalidated
 runner is not an active entry point in this publication.
@@ -128,7 +128,7 @@ JS divergence than actual corrections in two seeds. Mean correction JS was
 and identical-context controls gave zero differences. Those controls validate
 numerical behavior, not the interpretation of JS as successful updating.
 
-The [pilot records](results/earlier_diagnostics/answer_pilot.json) are retained.
+The [pilot records](../results/earlier_diagnostics/answer_pilot.json) are retained.
 The pilot is too small and uses a different protocol to support a training trend
 or a general behavioral conclusion.
 

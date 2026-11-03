@@ -57,7 +57,7 @@ rollouts reached both horizons.
 
 ## Checkpoints
 
-[experiment_config.py](experiment_config.py) pins full model revisions:
+[experiment_config.py](../experiment_config.py) pins full model revisions:
 
 | Label | Model repository | Revision |
 |---|---|---|

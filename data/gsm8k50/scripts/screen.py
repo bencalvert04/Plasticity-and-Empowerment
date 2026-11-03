@@ -4,10 +4,10 @@ from pathlib import Path
 from urllib.request import urlopen
 import certifi
 import torch
-sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
 from core import Experiment, MODEL
 
-root = Path(__file__).resolve().parent
+root = Path(__file__).resolve().parents[1]  # data/gsm8k50
 url = 'https://raw.githubusercontent.com/openai/grade-school-math/master/grade_school_math/data/test.jsonl'
 raw = urlopen(url, context=ssl.create_default_context(cafile=certifi.where())).read()
 data = [json.loads(line) for line in raw.splitlines()]

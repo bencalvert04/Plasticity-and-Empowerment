@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import patch
 from sampled_a_arithmetic150_experiment import windows,summaries,generate_trajectory
-from test_sampled_rlvr import Model,Tokenizer
+from tests.test_sampled_rlvr import Model,Tokenizer
 class Tests(unittest.TestCase):
  def test_windows_and_eos(self):
   for n in [0,49,50,99,100,149,150]:

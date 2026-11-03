@@ -1,6 +1,6 @@
 import unittest
 from windowed_arithmetic_experiment import windows,contexts,INSTRUCTION
-from test_structured_calculation import CharacterTokenizer
+from tests.test_structured_calculation import CharacterTokenizer
 class Tests(unittest.TestCase):
     def test_windows_and_early_eos(self):
         for n in [0,24,25,49,50]:

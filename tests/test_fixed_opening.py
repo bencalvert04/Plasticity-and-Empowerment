@@ -1,7 +1,7 @@
 """Protocol checks with a tiny deterministic model; no downloads or rollouts on Qwen."""
 import unittest
 from unittest.mock import patch
-from test_sampled_rlvr import Model, Tokenizer
+from tests.test_sampled_rlvr import Model, Tokenizer
 from sampled_rlvr_experiment import rollout, HORIZON, load_reference_a
 
 

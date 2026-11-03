@@ -29,5 +29,26 @@ import pyarrow.parquet as pq
 rows = pq.read_table('data/gsm8k50/gsm8k50_injections.parquet').to_pylist()
 ```
 
-The original screening/export scripts remain in the linked contribution's Git
-history; they are not needed to consume or verify the frozen dataset here.
+## Parquet columns
+
+- `question`: unchanged GSM8K question.
+- `answer`: original numeric GSM8K reference, preserved verbatim.
+- `injection`: a short correction changing a specific quantity.
+- `injection_after_tokens`: 20 generated assistant tokens.
+- `revised_answer`: manually derived answer after applying the correction.
+- Additional columns retain IDs, derivations, review notes, seeds, screening
+  lengths/completion status, and exact first-20-token prefixes.
+
+## Rebuild scripts
+
+The screening and export scripts from contribution #7 live in [scripts/](scripts).
+They are not needed to consume or verify the frozen dataset.
+
+- `python3 data/gsm8k50/scripts/export_parquet.py` rebuilds
+  `gsm8k50_injections.parquet` from `cases.json` and checks a round-trip,
+  including metadata. It reproduces the committed file byte-for-byte.
+- `scripts/screen.py` reproduces or resumes screening. It imports `core`, the
+  retired answer-level runner (see [cleanup notes](../../docs/CLEANUP.md)), which
+  is no longer in this branch; check it out from Git history to run screening.
+  It appends to `screening.jsonl` and overwrites `selected.json` in this
+  directory, so run it on a copy to preserve the original records.

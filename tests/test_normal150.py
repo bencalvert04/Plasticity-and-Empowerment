@@ -1,8 +1,8 @@
 import unittest
 from unittest.mock import patch
 from sampled_a_normal150_experiment import contexts,generate_trajectory,windows,summaries,INSTRUCTION
-from test_structured_calculation import CharacterTokenizer
-from test_sampled_rlvr import Model,Tokenizer
+from tests.test_structured_calculation import CharacterTokenizer
+from tests.test_sampled_rlvr import Model,Tokenizer
 from sampled_rlvr_experiment import continuation_prefix
 class Tests(unittest.TestCase):
  def test_exact_original_correction_context(self):

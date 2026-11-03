@@ -56,5 +56,5 @@ The review document only has heading punctuation normalized in this publication.
 
 Earlier Qwen source-prior estimates and the answer/injection pilot are preserved
 in `results/earlier_diagnostics/` as diagnostic evidence. Their limitations and
-why their runners are not supported here are recorded in [findings](../FINDINGS.md).
+why their runners are not supported here are recorded in [findings](../docs/FINDINGS.md).
 Their saved outputs are not pooled with the RLVR results.
