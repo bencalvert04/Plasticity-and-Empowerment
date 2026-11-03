@@ -11,3 +11,6 @@ __pycache__/
 /daytona_pilot/failure.json
 /daytona_pilot/pilot_config.json
 /daytona_pilot/pilot_results.json
+
+.venv-daytona/
+/daytona_for_ben/*.log

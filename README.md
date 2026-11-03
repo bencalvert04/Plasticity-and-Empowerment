@@ -1,5 +1,12 @@
 # Plasticity and Empowerment: context-ablation experiments
 
+## Daytona Code For Ben
+
+The [Daytona Code For Ben setup guide](daytona_for_ben/README.md) contains the
+nine-sandbox runner for the corrected whole-A experiment: remove **all A1–125**
+in the empowerment baseline and score **B75–125**. Includes exact launch commands,
+a no-compute plan check, and the detailed protocol. No added system prompt.
+
 This repository studies how a language model's next-token entropy changes when a
 piece of context is removed: the question, a mid-response correction, or the
 model's own earlier output. We compare checkpoints from GSM8K GRPO training runs
