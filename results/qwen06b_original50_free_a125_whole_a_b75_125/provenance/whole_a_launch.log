@@ -1,0 +1,29 @@
+step0_shard0 created
+step0_shard1 created
+step0_shard2 created
+step77_shard0 created
+step77_shard1 created
+step77_shard2 created
+step251_shard0 created
+step251_shard1 created
+step251_shard2 created
+All nine sandboxes provisioned. Starting independent shards.
+step251_shard0 remote worker started
+step0_shard2 remote worker started
+step251_shard1 remote worker started
+step251_shard2 remote worker started
+step77_shard0 remote worker started
+step0_shard0 remote worker started
+step0_shard1 remote worker started
+step77_shard2 remote worker started
+step77_shard1 remote worker started
+step0_shard2 verified results saved; sandbox deleted
+step0_shard0 verified results saved; sandbox deleted
+step251_shard1 DaytonaBadRequestError: Failed to execute command: bad request: failed to resolve container IP after 3 attempts: no IP address found. Is the Sandbox started?
+step77_shard2 DaytonaBadRequestError: Failed to execute command: bad request: failed to resolve container IP after 3 attempts: no IP address found. Is the Sandbox started?
+step251_shard2 DaytonaBadRequestError: Failed to execute command: bad request: failed to resolve container IP after 3 attempts: no IP address found. Is the Sandbox started?
+step77_shard1 DaytonaBadRequestError: Failed to execute command: bad request: failed to resolve container IP after 3 attempts: no IP address found. Is the Sandbox started?
+step77_shard0 DaytonaBadRequestError: Failed to execute command: bad request: failed to resolve container IP after 3 attempts: no IP address found. Is the Sandbox started?
+step251_shard0 DaytonaBadRequestError: Failed to execute command: bad request: failed to resolve container IP after 3 attempts: no IP address found. Is the Sandbox started?
+step0_shard1 DaytonaBadRequestError: Failed to execute command: bad request: failed to resolve container IP after 3 attempts: no IP address found. Is the Sandbox started?
+Some shards require recovery; inspect status.json. No missing data imputed.
