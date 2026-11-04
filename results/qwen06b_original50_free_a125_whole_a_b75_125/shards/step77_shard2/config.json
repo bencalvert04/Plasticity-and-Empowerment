@@ -1,0 +1,60 @@
+{
+  "protocol": "whole_a1_125_b75_125_v1",
+  "step": 77,
+  "repo": "cmpatino/qwen-grpo-r2",
+  "revision": "628c96470d7289309a6fe9b1292b8039e7b66794",
+  "shard": 2,
+  "shards_per_checkpoint": 3,
+  "question_rows": [
+    2,
+    5,
+    8,
+    11,
+    14,
+    17,
+    20,
+    23,
+    26,
+    29,
+    32,
+    35,
+    38,
+    41,
+    44,
+    47
+  ],
+  "trials": 10,
+  "a_cap": 125,
+  "b_cap": 125,
+  "a_source_range": [
+    1,
+    125
+  ],
+  "b_target_range": [
+    75,
+    125
+  ],
+  "range_endpoints": "inclusive; 51 positions",
+  "eligibility": "125 content tokens in A and B; cap without EOS is eligible; shorter spans saved, no replacement",
+  "chat_mode": "qwen3_nonthinking",
+  "injection": "original correction only",
+  "temperature": 1.0,
+  "top_k": null,
+  "top_p": null,
+  "device": "cpu",
+  "weights_dtype": "float32",
+  "entropy_dtype": "float32",
+  "cpu_threads": 4,
+  "seed": 20261030,
+  "a_seed_offset": 1000000000000,
+  "metric": "entropy-ablation proxies, not formal DI",
+  "empty_correction_turn_retained": true,
+  "empowerment_baseline": "remove all sampled A1-125; preserve empty assistant framing; same B history",
+  "source_sha256": {
+    "run_shard.py": "7305510d64d52ab5e8fbd66346d171d8e3ae4be591161c895028398d7e9df967",
+    "sampled_rlvr_experiment.py": "1081bfee5f2b60d31c5d7a34751ce634373c9a6eca710b0a9a977debf62591de",
+    "structured_calculation_experiment.py": "033a1c4a782a76142f0bbaa628fcb19f1b7395ff649657895d141e8f227a9738",
+    "qwen06b_gsm8k200.json": "1343b40f78d2bbc8a7d43ae379cda616781677f0bf816ce3133dbb217d2e09c5",
+    "gsm8k200_injections.parquet": "29fc8ee6184d1974bd1260a40dbaf8ca55e53c48c2e3de456343ab1e6320c333"
+  }
+}

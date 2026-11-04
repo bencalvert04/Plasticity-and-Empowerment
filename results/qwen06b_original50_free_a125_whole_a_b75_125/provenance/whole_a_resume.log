@@ -1,0 +1,16 @@
+resuming ['step0_shard1', 'step77_shard0', 'step77_shard1', 'step77_shard2', 'step251_shard0', 'step251_shard1', 'step251_shard2']
+step77_shard2 remote worker started
+step77_shard0 remote worker started
+step251_shard0 remote worker started
+step0_shard1 remote worker started
+step251_shard2 remote worker started
+step77_shard1 remote worker started
+step251_shard1 remote worker started
+step251_shard2 verified results saved; sandbox deleted
+step77_shard2 verified results saved; sandbox deleted
+step0_shard1 verified results saved; sandbox deleted
+step251_shard0 verified results saved; sandbox deleted
+step251_shard1 verified results saved; sandbox deleted
+step77_shard0 verified results saved; sandbox deleted
+step77_shard1 verified results saved; sandbox deleted
+FULL EXPERIMENT COMPLETE: 1500 attempts verified.
